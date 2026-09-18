@@ -78,7 +78,7 @@ In conventional camera-based eye tracking, spontaneous or wandering gaze is freq
 
 ## 3. Prototype Wheelchair and Safety Navigation
 
-The mobility subsystem translates classified EOG blink commands into physical wheelchair locomotion, complemented by localized autonomous safety mechanisms.
+The mobility system translates EOG blink commands into wheelchair movement, supported by autonomous safety sensors.
 
 ![Wheelchair Mode Interface](results/wheelchair_mode_user_interface.png)  
 *Figure 3: MATLAB user interface in Wheelchair Mode showing directional states and safety standby.*
