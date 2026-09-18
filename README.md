@@ -1,4 +1,4 @@
-﻿# EOG-Based Assistive HCI Platform
+# EOG-Based Assistive HCI Platform
 
 ![Status](https://img.shields.io/badge/Project-Completed-success) 
 ![Evaluation](https://img.shields.io/badge/Grade-Distinction-blue)
@@ -14,12 +14,12 @@ Developed an assistive Human-Computer Interface (HCI) allowing patients with sev
 ## Technical Specifications
 
 ### Hardware (Analog Front-End)
-* **Pre-Amplification:** AD620 instrumentation amplifier (Gain: \times$).
+* **Pre-Amplification:** AD620 instrumentation amplifier (gain ~6×).
 * **Filtering:** Active TL072/LM741 filters.
     * High-pass cutoff: 0.8 Hz (baseline wander removal).
     * Low-pass cutoff: 30 Hz (EMG artifact attenuation).
     * Notch filter: 50 Hz Twin-T (powerline interference rejection).
-* **Final Gain Stage:** \times$ non-inverting amplifier, providing total system gain of 600–6000$\times$ to condition microvolt EOG potentials for 0–5V ADC acquisition.
+* **Final Gain Stage:** TL072 non-inverting amplifier (gain up to 100×–1000×), providing total system gain of 600×–6000× to condition microvolt EOG potentials for 0–5V ADC acquisition.
 
 ![Circuit Schematic](results/eog_circuit_schematic.png)
 *Figure 1: Analog Front-End (AFE) circuit diagram.*
@@ -34,8 +34,8 @@ Developed an assistive Human-Computer Interface (HCI) allowing patients with sev
 
 ## System Evaluation
 
-Subject trials (=5$ healthy participants) yielded the following metrics:
-* **Directional Control Accuracy:** 94.0\% across 100 continuous trials.
+Subject trials ($N = 5$ healthy participants) yielded the following metrics:
+* **Directional Control Accuracy:** 94.0% across 100 continuous trials.
 * **System Latency:** 143 ms processing latency; 213 ms total actuation latency.
 * **Typing Speed:** 16.0 characters/min using a custom hierarchical Arabic virtual keyboard.
 
