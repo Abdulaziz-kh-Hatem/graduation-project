@@ -1,50 +1,198 @@
-# EOG-Based Assistive HCI Platform
+# Design and Implementation of an Integrated EOG-Based Human-Computer Interface for Virtual Keyboard and Wheelchair Control
 
-![Status](https://img.shields.io/badge/Project-Completed-success) 
-![Evaluation](https://img.shields.io/badge/Grade-Distinction-blue)
+**Undergraduate Graduation Project | Bachelor of Engineering (B.Eng.) in Biomedical Engineering**  
+Department of Biomedical Engineering · Faculty of Engineering and Computing  
+**University of Science and Technology (UST), Aden, Yemen** (Academic Year: 2025–2026)
 
-> **Notice:** Source code (MATLAB and Arduino) is temporarily withheld pending academic publication.
-
-**Senior Capstone Project | Biomedical Engineering | UST Aden**
-
-Developed an assistive Human-Computer Interface (HCI) allowing patients with severe neuromuscular disorders (e.g., ALS, LIS) to control a motorized wheelchair and an Arabic virtual keyboard via Electrooculography (EOG) signals.
-
----
-
-## Technical Specifications
-
-### Hardware (Analog Front-End)
-* **Pre-Amplification:** AD620 instrumentation amplifier (gain ~6×).
-* **Filtering:** Active TL072/LM741 filters.
-    * High-pass cutoff: 0.8 Hz (baseline wander removal).
-    * Low-pass cutoff: 30 Hz (EMG artifact attenuation).
-    * Notch filter: 50 Hz Twin-T (powerline interference rejection).
-* **Final Gain Stage:** TL072 non-inverting amplifier (gain up to 100×–1000×), providing total system gain of 600×–6000× to condition microvolt EOG potentials for 0–5V ADC acquisition.
-
-![Circuit Schematic](results/eog_circuit_schematic.png)
-*Figure 1: Analog Front-End (AFE) circuit diagram.*
-
-### Signal Processing (Software)
-* **Acquisition:** Arduino ATmega328P 10-bit ADC, serial USB transmission.
-* **DSP Pipeline:** MATLAB (DSP System Toolbox) implementing real-time moving-average filters and threshold-based directional/blink classification.
-* **Actuation:** Bluetooth telemetry (HC-05) to a secondary Arduino actuating L298N motor drivers on a 3D-printed wheelchair prototype.
-* **Safety Mechanism:** HC-SR04 ultrasonic sensors enforcing a 40 cm obstacle override distance.
+**Evaluation:** Graded **100% (Distinction with Highest Honors / امتياز مع مرتبة الشرف)**  
+**Project Team:** Abdulaziz Khaled Abdulaziz Hatem (Team Lead), Ahmed Mohammed Ahmed Salem Al-Kadhi, Mohammed Ayman Ali Qasem, Khaled Abdulmajid Mohammed Farhan  
+**Project Supervisor:** Dr. Nasr Kaid Ali AL-Audi  
 
 ---
 
-## System Evaluation
+## Project Demonstrations
 
-Subject trials ($N = 5$ healthy participants) yielded the following metrics:
-* **Directional Control Accuracy:** 94.0% across 100 continuous trials.
-* **System Latency:** 143 ms processing latency; 213 ms total actuation latency.
-* **Typing Speed:** 16.0 characters/min using a custom hierarchical Arabic virtual keyboard.
+[![Watch Virtual Keyboard Demonstration](https://img.shields.io/badge/%E2%96%B6%20Watch%20Virtual%20Keyboard%20Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/_7P_xF_lJTU?si=B2MbOErdmBXGmws5)
+&nbsp;
+[![Watch Wheelchair Movement Demonstration](https://img.shields.io/badge/%E2%96%B6%20Watch%20Wheelchair%20Movement%20Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/shorts/MNgpAQf11o8?si=srUkkPCUByLsF-Y1)
 
-### Video Demonstrations
-* **Typing Demo:** [HCI Virtual Keyboard (YouTube)](https://youtu.be/_7P_xF_lJTU?si=B2MbOErdmBXGmws5)
-* **Wheelchair Demo:** [Hardware Actuation (YouTube)](https://youtu.be/ZO9QT6c9rzA?si=DyfI3WWjkoZByfXB)
+> **Notice:** Source code (MATLAB digital signal processing algorithms and Arduino embedded firmware) is temporarily withheld pending academic publication.
 
-![Virtual Keyboard](results/virtual_keyboard_main_interface.png)
-*Figure 2: Arabic virtual keyboard UI.*
+---
 
-![Wheelchair Prototype](results/3d_printed_wheelchair_prototype.jpeg)
-*Figure 3: 3D-printed wheelchair prototype.*
+## 1. Project Overview
+
+Patients suffering from severe neuromuscular disorders—such as Amyotrophic Lateral Sclerosis (ALS), Locked-in Syndrome (LIS), quadriplegia, and muscular dystrophy—frequently lose voluntary muscular control of their limbs and vocal cords while retaining intact ocular motor function. Most existing assistive platforms address either mobility or communication in isolation, requiring multiple disparate hardware systems that impose severe cognitive fatigue and financial burden on patients in resource-constrained environments.
+
+This undergraduate Biomedical Engineering graduation project presents an integrated, low-cost assistive Human-Computer Interface (HCI) that combines:
+1. **Mobility:** An eye-controlled motorized prototype wheelchair with autonomous obstacle avoidance.
+2. **Communication:** An auto-scanning Arabic virtual keyboard for text composition and editing.
+
+Both functions are operated through a **single biopotential acquisition channel** using Electrooculography (EOG), which records the microvolt corneo-retinal standing potential generated by voluntary eye blinks. The platform features state-dependent control logic, enabling users to toggle smoothly between communication and navigation modes using deliberate blink sequences without changing hardware.
+
+---
+
+## 2. Arabic Virtual Keyboard
+
+A major contribution of this graduation project is addressing the severe lack of native Arabic language support in biopotential communication systems. Existing EOG and EEG spellers are predominantly developed for Latin or Asian character sets, which do not suit Arabic grammatical and morphological structures.
+
+![Virtual Keyboard](results/virtual_keyboard_main_interface.png)  
+*Figure 1: Main circular interface of the Arabic virtual keyboard showing the six auto-scanning sectors.*
+
+### 2.1 Interface Design and Sector Scanning
+The virtual keyboard features a circular graphical user interface (GUI) developed in MATLAB, divided into **six circular sectors**:
+* **Hierarchical Two-Stage Selection:**
+  1. **Sector Level:** The interface automatically scans through the six sectors sequentially, highlighting each sector in turn. When the target sector is highlighted, the user confirms selection with a single intentional blink crossing the calibrated voltage threshold.
+  2. **Character Level:** The system immediately transitions to sub-level scanning inside that sector, cycling through the individual Arabic characters and editing commands. A second intentional blink confirms the target selection.
+* **Statistical Ordering & Character Arrangement:** Arabic characters are grouped and arranged across sectors based on their frequency and practical usage in everyday Arabic communication (as documented in the graduation thesis). Positioning frequently used characters within early scanning positions minimizes the number of scanning cycles, reducing waiting time and ocular fatigue.
+* **Integrated Text Editing Features:** The interface includes dedicated editing commands:
+  * Space insertion (مسافة)
+  * Single-character backspace (حذف حرف)
+  * Whole-word deletion (حذف كلمة)
+  * Display clear (مسح الكل)
+
+![Character Selection](results/character_selection_inside_sector.png)  
+*Figure 2: Sub-level character scanning inside a selected sector with real-time EOG threshold detection.*
+
+### 2.2 Overcoming the "Midas Touch" Problem
+In conventional camera-based eye tracking, spontaneous or wandering gaze is frequently misinterpreted as deliberate input (the "Midas Touch" problem), leading to accidental selections and mental strain. In this EOG system, selections are triggered exclusively by intentional, voluntary blinks that exceed a calibrated voltage threshold, completely ignoring natural, spontaneous eye gaze.
+
+* **Typing Demonstration:** [Watch Virtual Keyboard Demonstration on YouTube](https://youtu.be/_7P_xF_lJTU?si=B2MbOErdmBXGmws5)
+
+---
+
+## 3. Prototype Wheelchair and Safety Navigation
+
+The mobility subsystem translates classified EOG blink commands into physical wheelchair locomotion, complemented by localized autonomous safety mechanisms.
+
+![Wheelchair Mode Interface](results/wheelchair_mode_user_interface.png)  
+*Figure 3: MATLAB user interface in Wheelchair Mode showing directional states and safety standby.*
+
+### 3.1 Actuation and Control
+* **Differential Steering:** Driven by four TT geared DC motors (1:48 gear ratio) in a 4-Wheel Drive (4WD) layout, allowing the prototype to accelerate smoothly and execute zero-radius turns in place (skid-steering).
+* **Mode Switching Logic:** The user toggles between Wheelchair Mode and Keyboard Mode using a four-consecutive-blink sequence.
+* **Safety Standby State:** Upon switching into Wheelchair Mode, the system automatically enters a "STANDBY" state, requiring an explicit user confirmation command before wheel motors can be engaged. This prevents abrupt, unintended movement during transitions.
+
+### 3.2 Autonomous Obstacle Avoidance Array
+To protect patients from collisions caused by timing errors or delayed inputs, the embedded Arduino firmware runs an independent obstacle detection layer using HC-SR04 ultrasonic Time-of-Flight (ToF) sensors:
+* **Front Proximity Threshold:** Fixed at 40 cm.
+* **Rear Proximity Threshold:** Fixed at 30 cm.
+* **Hardware Interrupt Safety Override:** If an environmental obstacle breaches either threshold perimeter, the microcontroller instantly triggers a hardware interrupt, cutting power to the motors and executing an automated in-place escape rotation until a clear path is detected, operating entirely independently of user blink commands.
+
+![Wheelchair Prototype](results/3d_printed_wheelchair_prototype.jpeg)  
+*Figure 4: 3D-printed wheelchair prototype showing the double-deck chassis, TT motors, and ultrasonic sensor.*
+
+* **Wheelchair Demonstration:** [Watch Wheelchair Movement Demonstration on YouTube](https://youtube.com/shorts/MNgpAQf11o8?si=srUkkPCUByLsF-Y1)
+
+---
+
+## 4. Hardware Components
+
+The hardware architecture combines an analog front-end (AFE) for bio-signal acquisition, embedded microcontroller units, wireless telemetry, and motor drive electronics. All electronic components were selected based on low cost, precision, and low noise:
+
+| Component | Part / Specification | Function in Project |
+| :--- | :--- | :--- |
+| **Instrumentation Amplifier** | AD620 | Stage 1 differential pre-amplifier (gain ~6×). High CMRR (> 100 dB), high input impedance (10^10 Ω), and low offset voltage (50 µV) to amplify microvolt biopotentials without loading the skin. |
+| **Dual Operational Amplifiers** | TL072 (x3 ICs) | Low-noise JFET-input dual op-amps (18 nV/√Hz, 13 V/µs slew rate) used across the analog front-end for the active 2nd-order Sallen-Key HPF (0.8 Hz), LPF (30 Hz), 50 Hz active twin-T notch filter, variable gain stage, and DC level shifter. |
+| **Electrodes** | Ag/AgCl Surface Electrodes | Pediatric adhesive electrodes placed in periorbital configuration (vertical channel: above and below the eye; reference ground on the forehead). |
+| **Data Acquisition MCU** | Arduino Uno (ATmega328P) | Digitizes conditioned analog EOG voltage via 10-bit ADC at a 250 Hz sampling rate; streams data to MATLAB host via USB serial (115200 baud). |
+| **Wheelchair Control MCU** | Arduino Nano / Uno | Embedded on the wheelchair chassis; receives Bluetooth commands, generates motor PWM signals, and executes ultrasonic interrupt safety routines. |
+| **Wireless Telemetry** | HC-05 Bluetooth Module | Serial Port Profile (SPP) transceiver operating at 2.4 GHz; provides wireless communication between MATLAB host and wheelchair MCU. |
+| **Motor Driver** | L298N Dual H-Bridge | High-voltage, high-current dual full-bridge driver (up to 2A per channel) providing PWM speed control and bidirectional motor driving. |
+| **Actuators** | TT Geared DC Motors (x4) | 3–6V DC motors with internal 1:48 gear reduction ratio configured in 4WD differential drive layout. |
+| **Obstacle Sensors** | HC-SR04 Ultrasonic Sensors (x2) | Non-contact Time-of-Flight distance measurement (front 40 cm, rear 30 cm) for autonomous collision avoidance. |
+| **Wheelchair Power Bank** | 3.7V 18650 Li-ion Cells + 3S 40A BMS | Provides high energy density and overcurrent protection for motors and microcontroller. |
+| **AFE Bipolar Power Supply** | Dual 9V Batteries (±9V) | Provides isolated, dual-rail symmetric supply for the analog front-end, completely isolating the user from mains power. |
+| **Chassis** | Custom 3D-Printed PLA | Double-deck architectural layout designed in CAD to physically isolate high-current motor wiring from sensitive logic circuits. |
+
+![Circuit Schematic](results/eog_circuit_schematic.png)  
+*Figure 5: Schematic diagram of the multi-stage EOG analog front-end.*
+
+---
+
+## 5. Signal Processing Pipeline
+
+The signal conditioning architecture distributes processing between analog hardware and MATLAB software:
+
+```
+[ Ag/AgCl Electrodes ]
+          │
+          ▼
+[ Stage 1: AD620 Pre-Amplifier ]          ──► Gain ≈ 6×, CMRR > 100 dB
+          │
+          ▼
+[ Stage 2: Active Sallen-Key HPF & LPF ]  ──► 0.8 Hz to 30 Hz Bandpass (TL072)
+          │
+          ▼
+[ Stage 3: Active Twin-T Notch Filter ]   ──► 50 Hz Powerline Rejection (TL072, Gain = 10×)
+          │
+          ▼
+[ Stage 4: Variable Gain & Level Shifter ]──► Gain = 10× to 100×, DC Offset +2.5V (TL072)
+          │
+          ▼
+[ Arduino ADC (ATmega328P) ]              ──► 10-bit resolution, 250 Hz sampling rate
+          │
+          ▼
+[ MATLAB Processing Engine ]              ──► Moving-average filter & threshold classification
+```
+
+1. **Analog Conditioning:** Microvolt ocular signals undergo pre-amplification (AD620, gain ~6×), 0.8–30 Hz active bandpass filtering to remove motion artifacts and high-frequency EMG noise, 50 Hz twin-T notch filtering to reject mains hum, and final variable gain amplification (total circuit gain configurable from 600× to 6000×) with DC level-shifting to match the 0–5V ADC dynamic range.
+2. **Sampling & Digital Filtering:** Conditioned signals are sampled at 250 Hz by the Arduino and transmitted over USB serial to MATLAB, where moving-average smoothing and threshold-crossing detection extract voluntary blinks.
+
+![Processed Signal](results/processed_eog_matlab_thresholds.png)  
+*Figure 6: Processed real-time EOG signal in MATLAB showing clean baseline and blink detection thresholds.*
+
+---
+
+## 6. System Evaluation and Experimental Results
+
+The integrated platform was quantitatively evaluated with **N = 5 healthy participants** (comprising the project engineering team, age 22–24) in an indoor laboratory setting under standardized testing protocols.
+
+![Experimental Setup](results/experimental_test_setup.jpg)  
+*Figure 7: Experimental laboratory test setup showing breadboard AFE, oscilloscope validation, and host processing.*
+
+### 6.1 Wheelchair Navigation Performance
+Each participant executed 20 distinct directional commands (Forward, Reverse, Rotation, and Emergency Stop), totaling **100 continuous evaluation trials**:
+* **Successful Trials:** 94 out of 100
+* **Overall Mean Navigation Accuracy:** **94.0%**
+* **Individual Navigation Accuracy:**
+  * Subject 1: 95.0% (19/20)
+  * Subject 2: 90.0% (18/20)
+  * Subject 3: 100.0% (20/20)
+  * Subject 4: 90.0% (18/20)
+  * Subject 5: 95.0% (19/20)
+
+### 6.2 Virtual Optical Speller Performance
+To standardize text composition testing, participants typed the standardized Arabic phrase:
+**"السلام عليكم ورحمة الله وبركاته"** (28 characters, including spaces).
+
+* **Overall Mean Speller Accuracy:** **89.0%**
+* **Mean Sector Selection Accuracy:** **92.2%**
+* **Mean Text Entry Speed:** **16.0 Characters Per Minute (CPM)**
+* **Individual Typing Speeds:**
+  * Subject 1: 15.0 CPM (Completion time: 112 s)
+  * Subject 2: 14.0 CPM (Completion time: 120 s)
+  * Subject 3: 18.0 CPM (Completion time: 93 s)
+  * Subject 4: 16.0 CPM (Completion time: 105 s)
+  * Subject 5: 17.0 CPM (Completion time: 99 s)
+* **Mean Completion Time:** **105.8 seconds** for the 28-character standardized phrase.
+* **Error Recovery:** A mean of 3.6 timing misalignments per session occurred during sector auto-scanning; all errors were successfully corrected using the single-character backspace function without disrupting operational state flow.
+
+### 6.3 Overall System Accuracy & Neuromuscular Learning Curve
+* **Overall Command Execution Accuracy:** **91.5% – 92.0%** across both operational modalities.
+* **The Learning Curve:** Testing confirmed that synchronization with the auto-scanning interface improves with practice. Subject 3, who completed additional pre-test familiarization, achieved **100% navigation accuracy** and a peak typing speed of **18.0 CPM**, demonstrating that user habituation directly improves typing throughput.
+
+---
+
+## 7. Authors & Academic Verification
+
+This work represents the senior graduation project completed in partial fulfillment of the requirements for the degree of **Bachelor of Engineering (B.Eng.) in Biomedical Engineering** at the **University of Science and Technology (UST), Aden, Yemen** (Graduation: July 2026).
+
+* **Authors (Project Team):**
+  1. **Abdulaziz Khaled Abdulaziz Hatem** (Team Lead) — [GitHub](https://github.com/Abdulaziz-kh-Hatem) · [LinkedIn](https://linkedin.com/in/abdulazizhatem)
+  2. **Ahmed Mohammed Ahmed Salem Al-Kadhi**
+  3. **Mohammed Ayman Ali Qasem**
+  4. **Khaled Abdulmajid Mohammed Farhan**
+* **Project Supervisor:** **Dr. Nasr Kaid Ali AL-Audi** (Head, Department of Biomedical Engineering, UST Aden)
+* **Final Academic Grade:** **100% (Distinction with Highest Honors / امتياز مع مرتبة الشرف)**
+

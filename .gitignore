@@ -1,0 +1,11 @@
+﻿# Data and datasets
+data/
+*.csv
+*.tsv
+*.mat
+
+# Temporary files
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
