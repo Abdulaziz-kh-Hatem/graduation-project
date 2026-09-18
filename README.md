@@ -16,7 +16,13 @@ Department of Biomedical Engineering · Faculty of Engineering and Computing
 &nbsp;
 [![Watch Wheelchair Movement Demonstration](https://img.shields.io/badge/%E2%96%B6%20Watch%20Wheelchair%20Movement%20Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/shorts/MNgpAQf11o8?si=srUkkPCUByLsF-Y1)
 
-> **Notice:** Source code (MATLAB digital signal processing algorithms and Arduino embedded firmware) is temporarily withheld pending academic publication.
+## Code
+
+The repository includes the code used in the implementation of the graduation project.
+
+- `code/eog_acquisition.ino`: Arduino firmware that samples the analog EOG signal and transmits it to the PC.
+- `code/wheelchair_controller.ino`: Arduino firmware that controls the wheelchair motors, handles Bluetooth commands, and provides ultrasonic obstacle avoidance.
+- `code/main_bci_system.m`: The primary MATLAB application that processes the EOG signals, classifies blink commands, and manages the state machine for the virtual keyboard and wheelchair navigation.
 
 ---
 
