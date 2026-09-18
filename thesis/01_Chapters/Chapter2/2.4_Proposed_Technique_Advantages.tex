@@ -1,0 +1,32 @@
+% ============================================================
+% Section 2.4: Advantages and Feasibility of the Proposed Technique
+% ============================================================
+\section{Advantages and Feasibility of the Proposed Technique}
+\label{sec:advantages_proposed_technique}
+
+The developed system presents an integrated engineering solution that directly addresses the technical and operational gaps identified in prior literature by combining 3D-printed prototype wheelchair navigation and an interactive virtual speller into a single platform. Rather than relying on fragmented, single-purpose assistive devices, the proposed design integrates mobility actuation and text communication into a unified architecture for individuals with severe motor impairments, including quadriplegia and locked-in syndrome (LIS). The key engineering advantages and technical feasibility of this design are outlined below.
+
+\subsection{Functional Integration in a Unified Platform}
+\label{subsec:functional_integration}
+
+To overcome the limitations of prior assistive systems that require separate devices for locomotion and communication, the proposed platform integrates both functions into a unified assistive system. Utilizing a single biological acquisition channel, raw electrooculography (EOG) signals are processed and routed to a central MATLAB Graphical User Interface (GUI). The user toggles between ``Wheelchair Mode'' and ``Keyboard Mode'' via a four-consecutive-blink command sequence. This unified architecture eliminates the need for multiple hardware setups, reduces physiological and cognitive workload, and establishes a consolidated control environment for assistive interaction.
+
+\subsection{Blink-Based Control and Reduced Muscular Fatigue}
+\label{subsec:blink_based_control}
+
+Unlike vision-based eye-tracking systems that suffer from lighting sensitivity or EEG interfaces that cause cognitive exhaustion, the proposed platform relies exclusively on voluntary blink dynamics (short blinks, long blinks, and distinct blink sequences). To minimize muscular fatigue and reduce the total number of required commands, a state-dependent finite state machine was implemented. The algorithm reinterprets biological control signals depending on the active state of the vehicle or text interface. This state-dependent design provides an immediate, reliable system response with minimal physical exertion, aligning with the limited motor capabilities of LIS patients.
+
+\subsection{Arabic Language Support}
+\label{subsec:arabic_language_support}
+
+To provide communication for Arabic speakers, the platform incorporates a virtual keyboard featuring a circular layout divided into six sectors. The user interface automatically scans through the sectors sequentially, allowing the user to select the target sector and subsequent character via voluntary blinks. Beyond basic character input, the speller includes text-editing features, including space insertion, single-character backspace, whole-word deletion, and display clearing. This interaction model bridges the language accessibility gap for Arabic-speaking users.
+
+\subsection{Navigational Safety and Caregiver Override}
+\label{subsec:navigational_safety}
+
+Unlike conventional electric wheelchairs that place the full burden of collision avoidance on the user, the 3D-printed wheelchair prototype incorporates an obstacle-avoidance safety routine. Front and rear ultrasonic distance sensors continuously monitor the immediate environment to detect obstacles and trigger emergency auto-stop protocols. Furthermore, to provide operational safety, a mobile application provides a secondary wireless control channel (Caregiver Override) via Bluetooth. This override feature enables caregivers to assume manual control of the wheelchair during emergencies or when user fatigue occurs, providing caregiver intervention alongside motorized navigation.
+
+\subsection{Technical Feasibility and Prototyping}
+\label{subsec:technical_clinical_feasibility}
+
+From an engineering perspective, the system demonstrates high feasibility by eliminating the need for expensive commercial bio-signal acquisition equipment. A custom, low-cost Analog Front-End (AFE) circuit was designed specifically to acquire microvolt-level EOG signals, utilizing an AD620 instrumentation amplifier alongside active analog and digital filtering (including a $50\,\text{Hz}$ active notch filter for power line noise rejection). By employing standard, off-the-shelf components---such as Arduino microcontrollers, an HC-05 Bluetooth module for wireless data transmission, and a rechargeable lithium-ion battery system managed by a Battery Management System (BMS)---the design balances signal fidelity against total component cost ($<15$\,USD for the AFE). This modular configuration allows straightforward laboratory replication and further clinical evaluation.

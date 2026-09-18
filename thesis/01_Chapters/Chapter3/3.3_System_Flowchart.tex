@@ -1,0 +1,53 @@
+% ============================================================
+% Section 3.3: System Flowcharts
+% ============================================================
+\section{System Flowcharts}
+\label{sec:system_flowcharts}
+
+System software behavior is governed by the master system operation flowchart illustrated in Figure~\ref{fig:master_system_flowchart}, alongside three primary sub-flowcharts executing concurrently across the host processing unit and embedded microcontroller.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.88\textwidth]{master_system_flowchart.png}
+  \caption{Unified System Operation and Decision Logic Flowchart.}
+  \label{fig:master_system_flowchart}
+\end{figure}
+
+\FloatBarrier
+\subsection{EOG Signal Acquisition, Processing, and Validation (MATLAB)}
+\label{subsec:flowchart_matlab}
+
+The master execution loop initiates with the continuous acquisition of ocular micro-biopotentials via surface Ag/AgCl electrodes (\textit{Start System Loop}). The raw physiological signal undergoes primary analog conditioning---utilizing the AD620 instrumentation amplifier and TL072 active filters---before being digitized by the microcontroller's ADC at a locked frequency of $250\,\text{Hz}$ (\textit{Acquire \& Condition EOG Signal}).
+
+Upon transmission to the MATLAB environment, the digital signal is refined using a $50\,\text{Hz}$ Notch filter and a moving-average algorithm to eliminate power-line hum and baseline noise (\textit{Digitize \& Process}). Subsequently, the algorithm evaluates the waveform against predefined amplitude thresholds (\textit{Valid Eye Command?}). If the signal fails to meet the strict criteria (e.g., spontaneous blinks or motion artifacts), the system classifies it as a false trigger, ignoring the noise and resetting the cycle (\textit{Ignore Noise \& Return to Loop}). Only valid, intentional blink transients are permitted to proceed to the classification engine.
+
+\FloatBarrier
+\subsection{Unified System Mode Switching and Routing Logic}
+\label{subsec:flowchart_mode_switching}
+
+Once an intentional ocular command is validated, the Decision Engine determines the system's operational path based on the temporal blink sequence. The logic first evaluates whether a high-level toggle sequence has been executed (\textit{Four Consecutive Blinks?}).
+
+If exactly four blinks are detected (\textit{Yes}), the system executes a mode transition (\textit{Toggle System Mode: SPELL $\leftrightarrow$ WHEEL}). Crucially, to ensure patient safety during this macro-state transition, a \textit{Safety Stop Trigger} is simultaneously activated, automatically placing the wheelchair into a STANDBY state to prevent sudden, uncommanded physical movement.
+
+If the sequence contains fewer than four blinks (\textit{No}), the logic progresses to evaluate the specific gesture (\textit{Parse Blink Count: 1, 2, or 3 Blinks}) and routes the command based on the currently active macro-state (\textit{Check Active Mode?}):
+
+\begin{itemize}
+    \item \textbf{Virtual Speller Mode (SPELL):} The system routes the command to the GUI (\textit{Execute Speller Selection}). The parsed blink count dictates the typing action: 1 blink executes sector/character selection, 2 blinks trigger a space or single-character backspace, and 3 blinks clear the text display.
+
+    \item \textbf{Wheelchair Mode (WHEELCHAIR):} The parsed directional command is routed to the physical navigation and safety layer.
+\end{itemize}
+
+\FloatBarrier
+\subsection{Autonomous Obstacle Avoidance and Output Actuation Flowchart}
+\label{subsec:flowchart_arduino}
+
+When operating in Wheelchair Mode, user commands are not executed blindly. Before any directional command is translated into physical actuation, the decision logic queries the embedded ultrasonic safety layer (\textit{Obstacle Nearby?}).
+
+\begin{itemize}
+    \item \textbf{Collision Imminent (Yes):} If an environmental obstacle breaches the strict proximity thresholds, the user's directional intent is immediately overridden. The system executes a hardware-level intervention (\textit{Emergency Stop \& $90^\circ$ Auto-Rotate}), autonomously halting the vehicle and rotating it until a clear path is verified.
+
+    \item \textbf{Clear Path (No):} If the safety perimeters are clear, the validated movement command is encoded and transmitted via the wireless serial link to the motor driver (\textit{Send BT Command \& Drive Prototype Wheelchair}).
+\end{itemize}
+
+Ultimately, both the spelling and navigation execution branches converge at a final visualization block (\textit{Update System GUI Status}). This ensures the user receives real-time visual feedback on the host display---reflecting typed characters, active wheelchair directions, or standby states. The cycle then concludes (\textit{Return to Main Loop}), resetting the buffers to acquire the next biopotential command.
+

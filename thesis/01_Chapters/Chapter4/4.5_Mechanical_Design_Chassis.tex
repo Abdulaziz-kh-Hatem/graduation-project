@@ -1,0 +1,30 @@
+% ============================================================
+% Section 4.5: Mechanical Design, Actuation, and 3D Printed Chassis
+% ============================================================
+\section{Mechanical Design, Actuation, and 3D Printed Chassis}
+\label{sec:mechanical_design_chassis}
+
+The structural framework of the prototype wheelchair was designed using CAD software and manufactured utilizing 3D printing technology with Polylactic Acid (PLA) material. PLA was selected for its optimal balance of structural rigidity, low weight, and cost-effectiveness.
+
+To prevent electromagnetic interference (EMI) and organize the hardware, the chassis features a double-deck architectural design. The lower deck houses the high-current components, including the 18650 Lithium-ion battery power bank and the motor wiring, while the upper deck isolates the logic controllers and wireless communication modules.
+
+Physical actuation is driven by a 4-Wheel Drive (4WD) system utilizing four independent TT geared DC motors. This differential steering configuration generates sufficient combined torque to overcome the gross weight of the PLA chassis and the batteries, as well as floor friction. More importantly, the 4WD differential setup enables skid-steering, allowing the wheelchair to execute zero-radius auto-rotations ($90^\circ$ turns in place) when an obstacle is detected, maximizing maneuverability in confined indoor environments.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{WhatsApp Image 2026-07-29 at 7.54.45 PM.jpeg}
+    \caption{Front-angled view of the 3D-printed wheelchair prototype showcasing the dual-layer PLA chassis, front ultrasonic sensor, and 18650 Li-ion battery power bank.}
+    \label{fig:wheelchair_front_chassis}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{WhatsApp Image 2026-07-29 at 7.54.46 PM.jpeg}
+    \caption{Side profile revealing the TT geared DC motors enabling 4-wheel differential drive and zero-radius skid-steering capabilities.}
+    \label{fig:wheelchair_side_motors}
+\end{subfigure}
+\caption{3D-printed wheelchair prototype mechanical design, double-deck PLA chassis layout, and 4WD actuation assembly.}
+\label{fig:wheelchair_prototype_mechanical_assembly}
+\end{figure}

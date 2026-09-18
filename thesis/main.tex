@@ -1,0 +1,323 @@
+% ============================================================
+% main.tex - Graduation Project Report
+% University of Science and Technology
+% Faculty of Engineering - Biomedical Engineering Department
+% ============================================================
+% Engine: XeLaTeX | Bibliography: biblatex + biber
+% ============================================================
+
+\documentclass[12pt, a4paper, oneside]{report}
+
+% ============================================================
+% PACKAGES
+% ============================================================
+
+% --- Encoding & Fonts ---
+\usepackage{fontspec}
+\setmainfont{times.ttf}[BoldFont=timesbd.ttf, ItalicFont=timesi.ttf, BoldItalicFont=timesbi.ttf]
+\newfontfamily\arabicfont[Script=Arabic, Scale=1.15, BoldFont=artrbdo.ttf, ItalicFont=artro.ttf, ItalicFeatures={AutoFakeSlant=0.18}, BoldItalicFont=artrbdo.ttf, BoldItalicFeatures={AutoFakeSlant=0.18}]{artro.ttf}
+
+% --- Language Support ---
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage[numerals=mashriq]{arabic}
+
+% --- Page Layout (University Requirements) ---
+% Binding side: 3.5cm, Other margins: 2.5cm
+\usepackage[
+  a4paper,
+  left=3.5cm,
+  right=2.5cm,
+  top=2.5cm,
+  bottom=2.5cm
+]{geometry}
+
+% --- Paragraph & Spacing ---
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% --- Headers & Footers ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Plain style for chapter pages
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% --- Colors & Boxes ---
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\definecolor{navyblue}{RGB}{0,51,102}
+\definecolor{darkgreen}{RGB}{0,102,51}
+\definecolor{darkred}{RGB}{153,0,0}
+
+% --- Section Formatting ---
+\usepackage{titlesec}
+
+\usepackage{etoolbox}
+
+% Numbered Chapter Page: Standalone Centered Cover Page
+\titleformat{name=\chapter}[display]
+  {\thispagestyle{plain}\normalfont\centering\vspace*{4.2cm}}
+  {{\color{navyblue}\rule{0.65\textwidth}{1.5pt}}\\[1.5ex]
+   \fontsize{18}{22}\selectfont\bfseries\color{navyblue}\MakeUppercase{\chaptertitlename}\ \thechapter}
+  {1.2ex}
+  {\fontsize{22}{28}\selectfont\bfseries\color{navyblue}\MakeUppercase}
+  [\vspace{1.5ex}{\color{navyblue}\rule{0.65\textwidth}{1.5pt}}]
+
+\titlespacing*{name=\chapter}{0pt}{0pt}{0pt}
+
+% Command for elegant chapter overview on the standalone cover page
+\newcommand{\chapteroverview}[1]{%
+  \vspace{2.0em}%
+  \begin{center}%
+    \begin{minipage}{0.85\textwidth}%
+      \centering\itshape\color{black}%
+      \fontsize{11}{16}\selectfont%
+      #1%
+    \end{minipage}%
+  \end{center}%
+  \clearpage%
+}
+
+
+
+
+% Numberless Chapter Page (TOC, List of Figures/Tables, Abbreviations, References)
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\fontsize{16}{20}\selectfont\bfseries\centering}
+  {}{0pt}
+  {\fontsize{16}{20}\selectfont\bfseries\MakeUppercase}
+
+\titlespacing*{name=\chapter,numberless}{0pt}{-10pt}{20pt}
+
+% Section title: size 16, bold
+\titleformat{\section}
+  {\normalfont\fontsize{16}{20}\selectfont\bfseries}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+% Subsection title: size 12, bold
+\titleformat{\subsection}
+  {\normalfont\fontsize{12}{16}\selectfont\bfseries}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+% Subsubsection title: size 12, bold
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{12}{16}\selectfont\bfseries}
+  {\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+
+% --- Table of Contents, List of Figures/Tables ---
+\usepackage{tocloft}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cfttoctitlefont}{\hfill\fontsize{14}{18}\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftloftitlefont}{\hfill\fontsize{14}{18}\bfseries}
+\renewcommand{\cftafterloftitle}{\hfill}
+\renewcommand{\cftlottitlefont}{\hfill\fontsize{14}{18}\bfseries}
+\renewcommand{\cftafterlottitle}{\hfill}
+\renewcommand{\cftchappresnum}{Chapter }
+\setlength{\cftchapnumwidth}{6.5em}
+
+
+% --- Graphics ---
+\usepackage{graphicx}
+\graphicspath{
+  {03_Figures/}
+  {03_Figures/Ch1/}
+  {03_Figures/Ch2/}
+  {03_Figures/Ch3/}
+  {03_Figures/Ch4/}
+  {03_Figures/Ch5/}
+  
+}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+% --- Captions ---
+\usepackage[font={singlespacing,small}, labelfont=bf, labelsep=colon]{caption}
+% Table caption on top, figure caption on bottom (university requirement)
+\captionsetup[table]{position=above}
+\captionsetup[figure]{position=below}
+
+% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\providecommand{\UseMathForPositioningText}{}
+
+% --- Units ---
+\usepackage{siunitx}
+
+% --- TikZ Diagrams ---
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows}
+
+% --- Code Listings ---
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  tabsize=4,
+  captionpos=b
+}
+
+% --- Cross References & Hyperlinks ---
+\usepackage[
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue,
+  bookmarks=true,
+  bookmarksopen=true,
+  pdfstartview=FitH
+]{hyperref}
+\usepackage{bookmark}
+
+% --- Bibliography (IEEE / Numeric Style) ---
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  natbib=true,
+  maxcitenames=2,
+  maxbibnames=99
+]{biblatex}
+\addbibresource{references.bib}
+% Single-spacing within reference entries and double-spacing between entries
+\setlength{\bibitemsep}{2\baselineskip}
+\renewcommand{\bibfont}{\normalfont\fontsize{12}{14}\selectfont}
+
+
+
+% --- Appendices ---
+\usepackage[toc, page]{appendix}
+
+% --- Abbreviations ---
+% (Using manual longtable in 07_Abbreviations.tex instead of glossaries package)
+
+% --- List Formatting (University & Academic Standards) ---
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.5em, itemsep=3pt, parsep=0pt, topsep=4pt}
+\setlist[itemize,2]{label=\textendash, leftmargin=1.5em, itemsep=2pt, parsep=0pt, topsep=2pt}
+\setlist[itemize,3]{label=\textcirc, leftmargin=1.5em, itemsep=2pt, parsep=0pt, topsep=2pt}
+\setlist[enumerate,1]{label=\textbf{\arabic*.}, leftmargin=1.5em, itemsep=3pt, parsep=0pt, topsep=4pt}
+\setlist[enumerate,2]{label=\textbf{(\alph*)}, leftmargin=1.5em, itemsep=2pt, parsep=0pt, topsep=2pt}
+
+% --- Orphan and Widow Control ---
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+
+% --- Float Placement Parameters ---
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.75}
+
+
+% ============================================================
+% CUSTOM COMMANDS
+% ============================================================
+
+% Arabic text inline
+\newcommand{\ar}[1]{\textarabic{#1}}
+
+% ============================================================
+% DOCUMENT METADATA
+% ============================================================
+
+\hypersetup{
+  pdftitle={Graduation Project Report},
+  pdfauthor={Student Name},
+  pdfsubject={Biomedical Engineering Graduation Project},
+  pdfkeywords={EOG, Wheelchair, Arabic Keyboard, Biomedical Engineering}
+}
+
+% ============================================================
+% DOCUMENT BEGIN
+% ============================================================
+\begin{document}
+
+% --- Front Matter (Roman numerals) ---
+\pagenumbering{roman}
+\pagestyle{plain}
+
+% Title Page
+\input{00_Frontmatter/01_Title_Page}
+
+% Dedication
+\input{00_Frontmatter/02_Dedication}
+
+% Acknowledgments
+\input{00_Frontmatter/03_Acknowledgments}
+
+% Abstract
+\input{00_Frontmatter/04_Abstract}
+
+% Table of Contents
+\input{00_Frontmatter/05_Table_of_Contents}
+
+% List of Tables
+\input{00_Frontmatter/06_List_of_Tables}
+
+% List of Figures
+\input{00_Frontmatter/07_List_of_Figures}
+
+% Abbreviations
+\input{00_Frontmatter/08_List_of_Abbreviations}
+
+% --- Main Matter (Arabic numerals) ---
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% Chapter 1: Introduction
+\input{01_Chapters/Chapter1/Ch1_Main}
+
+% Chapter 2: Medical & Engineering Background and Literature Review
+\input{01_Chapters/Chapter2/Ch2_Main}
+
+% Chapter 3: Block Diagram
+\input{01_Chapters/Chapter3/Ch3_Main}
+
+% Chapter 4: Circuit Simulation & Implementation
+\input{01_Chapters/Chapter4/Ch4_Main}
+
+% Chapter 5: Results & Discussion
+\input{01_Chapters/Chapter5/Ch5_Main}
+
+% Chapter 6: Conclusion & Recommendation
+\input{01_Chapters/Chapter6/Ch6_Main}
+
+% --- References ---
+\clearpage
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}
+

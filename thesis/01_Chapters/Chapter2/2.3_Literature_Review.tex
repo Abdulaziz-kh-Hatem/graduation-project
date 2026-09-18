@@ -1,0 +1,101 @@
+% ============================================================
+% Section 2.3: Literature Review
+% ============================================================
+\section{Literature Review}
+\label{sec:literature_review}
+
+This section reviews existing literature on Human-Machine Interfaces (HMIs), smart wheelchairs, and assistive communication platforms. The goal is to analyze technical strengths and limitations, ultimately establishing the research gap addressed by the proposed integrated system.
+
+% ------------------------------------------------------------
+\subsection[Scientific Comparison: BCI (EEG) vs. EOG]{Scientific Comparison: Brain-Computer Interfaces (EEG) vs. Electrooculography (EOG)}
+\label{subsec:eeg_vs_eog_comparison}
+
+Electroencephalography (EEG) and electrooculography (EOG) represent two prominent bio-potentials utilized for assistive control interfaces \cite{onesensor2014proposals}. Comparing both modalities based on prior literature reveals critical operational differences affecting their real-time feasibility:
+
+\begin{itemize}
+    \item \textbf{Signal-to-Noise Ratio (SNR):} EOG signals exhibit a significantly higher SNR compared to EEG signals. Brain potentials are inherently microvolt-level, highly complex, and prone to severe interference from ambient noise and muscular activity \cite{onesensor2014proposals}.
+    \item \textbf{Latency:} EEG-based systems typically suffer from relatively high latency due to the intensive signal processing required for pattern classification (e.g., P300 or Motor Imagery) \cite{wolpaw2002bci}. Conversely, EOG signals provide faster response times and well-defined, consistent waveforms that are easily detected in real time.
+    \item \textbf{Electrode Count:} EEG interfaces require high-density electrode caps covering the scalp, increasing hardware setup complexity and overall cost. In contrast, EOG systems require only a minimal number of facial surface electrodes placed around the eyes, offering superior user comfort \cite{barea2002eog}.
+    \item \textbf{Computational Complexity:} Decoding EEG signals demands advanced digital signal processing algorithms, imposing high computational loads. EOG signals possess distinct feature metrics (e.g., voluntary blink spikes) that can be processed on low-cost embedded microcontrollers \cite{kumar2016eog}.
+    \item \textbf{Calibration Requirements:} Both modalities face operational calibration challenges. EOG signals are susceptible to baseline DC drift and ocular fatigue, requiring periodic baseline adjustments. Similarly, EEG systems demand extensive user training due to intra-subject signal non-stationarity.
+    \item \textbf{Real-Time Performance and Clinical Comfort:} Voluntary eye movement provides an intuitive control modality that remains functional even in patients with severe paralysis. Although EOG control may sometimes be restricted to discrete command sets, it avoids the continuous cognitive strain associated with operating EEG-based interfaces \cite{hosni2018eeg}.
+\end{itemize}
+
+\textbf{Summary:} Literature indicates that EOG is more suitable for real-time control of assistive wheelchairs and communication platforms due to its acquisition simplicity, cost-effectiveness, rapid response, and ability to deliver reliable control with minimal computational and physiological overhead \cite{onesensor2014proposals, hosni2018eeg}.
+
+% ------------------------------------------------------------
+\FloatBarrier
+\subsection{Biosignal-Based Smart Wheelchairs}
+\label{subsec:biosignal_smart_wheelchairs}
+
+Smart wheelchairs have evolved to enhance patient autonomy and reduce caregiver reliance. Prior studies have explored several bio-signal interaction modalities:
+
+\begin{itemize}
+    \item \textbf{EEG-Based Systems:} Offered autonomous manual control based on Motor Imagery (MI) \cite{liu2024multimodal}. However, these systems exhibit degraded performance in dynamic environments due to user mental fatigue, command latency, and reliance on expensive instrumentation.
+    \item \textbf{EOG-Based Systems:} Utilized ocular movements for direct directional control \cite{barea2002eog}. Prior studies demonstrate that EOG-based systems reduce setup time and deliver precise navigation commands \cite{alzahrani2026design}.
+    \item \textbf{Hybrid Systems (EEG/EOG):} Integrated EEG and EOG to overcome single-modality constraints; EOG artifacts (such as double blinks) were repurposed as rapid emergency stop commands, while EEG managed continuous directional steering \cite{hosni2018eeg, hybrid2019wheelchair}.
+\end{itemize}
+
+\textbf{Engineering Limitations:} Despite these advancements, many existing smart wheelchairs lack integrated autonomous obstacle avoidance mechanisms, exposing patients to collision risks and necessitating continuous caregiver supervision \cite{smartwheelchair2019obstacle, aiiot2024wheelchair}. Furthermore, high computational complexity hinders deployment on low-cost microcontrollers, while reliance on continuous mental focus imposes a heavy cognitive load on the user.
+
+% ------------------------------------------------------------
+\FloatBarrier
+\subsection{Virtual Keyboards and Spellers}
+\label{subsec:virtual_keyboards_spellers}
+
+To enable communication for severely motor-impaired individuals (e.g., LIS patients), various assistive interface modalities have been developed:
+
+\begin{itemize}
+    \item \textbf{P300-Based Systems (EEG):} Rely on matrix spellers with flashing rows and columns, requiring intense visual attention from the user \cite{kabbara2015efficient}. Although widely researched, P300 spellers exhibit low typing speeds, high visual fatigue, and low Information Transfer Rates (ITR).
+    \item \textbf{Vision-Based / Eye-Tracking Systems:} Utilize camera-based video-oculography to track gaze direction \cite{eyedriven2026review}. While offering high spatial accuracy, these systems are highly sensitive to ambient lighting variations and require head-pose stability, limiting their operational effectiveness in dynamic outdoor environments.
+    \item \textbf{EOG-Based Keyboards:} Operate reliably across variable lighting conditions without optical camera hardware \cite{kumar2016eog, preetha2025realtime}. Character selection is achieved through directional eye movements and confirmed via voluntary blinks, achieving practical communication rates.
+\end{itemize}
+
+\textbf{Arabic Support and Usability Limitations:} The vast majority of existing EOG- and EEG-based communication platforms are configured exclusively for Latin or Asian character sets, leaving Arabic language support severely lacking \cite{kabbara2015efficient, alzahrani2026design}. The Arabic language possesses distinct structural and grammatical characteristics that necessitate customized interaction interfaces. Recently, integrating Morse code logic with EOG signals has proven effective for Arabic character generation as a low-cost alternative \cite{alzahrani2026design}. Additionally, many EOG interfaces suffer from the ``Midas Touch'' problem---the inability to differentiate between spontaneous eye movements and intentional control commands---leading to frequent false triggers.
+
+% ------------------------------------------------------------
+\FloatBarrier
+\subsection{Research Gap}
+\label{subsec:research_gap}
+
+Critical analysis of existing literature reveals that current assistive technologies typically provide fragmented solutions: they either focus exclusively on mobility via smart wheelchairs or independently address virtual communication interfaces. Unification of both essential functionalities into a single platform is rarely addressed.
+
+Furthermore, prior studies exhibit common technical limitations:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Absence of unified platforms providing dual-mode switching between mobility and communication.
+    \item High implementation costs and computational complexity that prevent deployment on low-cost embedded systems.
+    \item A severe shortage of Arabic language support in bio-signal-based communication interfaces.
+    \item Lack of embedded autonomous navigation safety mechanisms (such as automatic obstacle avoidance) fully integrated with a single EOG control interface.
+\end{enumerate}
+
+Based on this review, the primary research gap addressed by this project is formulated as follows:
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Formulated Research Gap}]
+\textbf{Research Gap:} The lack of a low-cost, unified assistive platform that effectively integrates motorized wheelchair navigation (featuring automated obstacle avoidance) with Arabic virtual speller communication through a single, non-invasive EOG interaction interface.
+\end{tcolorbox}
+
+To provide a structured synthesis of the literature, Table \ref{tab:literature_review_summary} presents a comparative scientific summary comparing prior assistive technologies against the proposed integrated system.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparative Scientific Summary of Prior Literature vs. Proposed Integrated System}
+  \label{tab:literature_review_summary}
+  \small
+  \begin{tabularx}{\textwidth}{@{} p{2.2cm} X X p{2.0cm} p{2.4cm} @{}}
+    \toprule
+    \textbf{Modality} & \textbf{Key Advantages} & \textbf{Major Technical Limitations} & \textbf{Target Scope} & \textbf{Arabic \& Safety} \\
+    \midrule
+    \textbf{EEG / BCI} \cite{liu2024multimodal, wolpaw2002bci} & Direct neural decoding & Low SNR, high latency, complex electrode cap, mental fatigue & Single mode (Mobility/Speller) & Unsupported \\
+    \midrule
+    \textbf{VOG (Camera)} \cite{eyedriven2026review} & High spatial accuracy & Sensitive to lighting, head posture drift, high compute load & Speller only & Rare / Limited \\
+    \midrule
+    \textbf{EOG Wheelchair} \cite{barea2002eog, hybrid2019wheelchair} & High SNR, low-cost hardware & Lacks real-time obstacle avoidance, no text speller & Navigation only & No safety override \\
+    \midrule
+    \textbf{EOG Speller} \cite{kumar2016eog, kabbara2015efficient} & Insensitive to ambient illumination variations & Midas-touch false triggers, non-Arabic script design & Speller only & Lacks native Arabic \\
+    \midrule
+    \textbf{Proposed System} & High SNR, hybrid MATLAB-Arduino DSP, 3-electrode interface & Relies on voluntary blink temporal width classification & \textbf{Dual-Mode} (Wheelchair + Speller) & \textbf{Full Arabic + Auto Obstacle Escape} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+

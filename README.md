@@ -26,6 +26,15 @@ The repository includes the code used in the implementation of the graduation pr
 
 ---
 
+## Graduation Thesis Documentation
+
+This repository includes the complete LaTeX source files used to prepare the graduation project, together with the final compiled PDF.
+
+- **[Final Compiled PDF](thesis/graduation-project.pdf)**
+- **[LaTeX Source Files](thesis/)**
+
+---
+
 ## 1. Project Overview
 
 Patients suffering from severe neuromuscular disorders—such as Amyotrophic Lateral Sclerosis (ALS), Locked-in Syndrome (LIS), quadriplegia, and muscular dystrophy—frequently lose voluntary muscular control of their limbs and vocal cords while retaining intact ocular motor function. Most existing assistive platforms address either mobility or communication in isolation, requiring multiple disparate hardware systems that impose severe cognitive fatigue and financial burden on patients in resource-constrained environments.

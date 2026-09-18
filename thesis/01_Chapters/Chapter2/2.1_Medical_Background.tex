@@ -1,0 +1,63 @@
+% ============================================================
+% Section 2.1: Medical Background
+% ============================================================
+\section{Medical Background}
+\label{sec:medical_background}
+
+\subsection{Anatomy and Physiology of the Human Eye (Corneo-Retinal Dipole)}
+\label{subsec:anatomy_eye_dipole}
+
+From an electrical perspective, the human eye functions as a biological dipole or bio-battery. This electrostatic property arises from the resting potential difference maintained between the cornea and the retina. The anterior segment (cornea) carries a positive electrical charge, whereas the posterior segment (retina) carries a negative charge. This charge distribution generates an internal standing potential ranging from $10\,\text{mV}$ to $30\,\text{mV}$ \cite{webster2009medical}. However, when measured at the skin surface, this potential experiences significant attenuation due to the impedance of surrounding biological tissues. As the eyeball rotates, the orientation and magnitude of this electrostatic field shift relative to fixed electrode placement sites on the face. Figure \ref{fig:corneo_retinal_dipole} illustrates this corneo-retinal dipole mechanism and the resulting voltage variation observed at the skin surface during horizontal eye movements.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{Graphical-illustration-of-the-corneo-retinal-standing-potential-of-the-eyeball.png}
+  \caption{Corneo-retinal dipole potential and signal variations during eye movements \cite{dietrich2017towards}.}
+  \label{fig:corneo_retinal_dipole}
+\end{figure}
+
+\FloatBarrier
+\subsection{Biomechanics of Eye Movements and Blinks}
+\label{subsec:biomechanics_eye_movements}
+
+Human ocular dynamics consist primarily of rapid ballistic movements known as saccades and stationary resting intervals referred to as fixations. In addition, eyelid activity (blinking) can be physiologically categorized into involuntary and voluntary blinks. Involuntary blinks occur spontaneously to lubricate the corneal surface, whereas voluntary blinks are intentional, displaying significantly higher signal amplitudes and longer durations \cite{hall2016guyton}. Distinguishing between these two physiological behaviors is essential for the system's control logic. The software algorithm relies on detecting intentional, strong blinks and sustained fixations to generate mode-switching and selection commands while filtering out random involuntary blinks to prevent false system activation.
+
+To distinguish between spontaneous eyelid activity and intentional control commands, the temporal and amplitude characteristics of the biopotential waveforms were analyzed. As illustrated in Figure \ref{fig:eog_blink_thresholding}(A), an involuntary blink produces a narrow, lower-amplitude biphasic spike with a short temporal footprint ($\approx 150\,\text{ms}$) resulting from spontaneous corneal lubrication. Conversely, as depicted in Figure \ref{fig:eog_blink_thresholding}(B), an intentional voluntary blink yields a significantly wider peak with a higher voltage amplitude and an extended temporal duration ($>400\,\text{ms}$) caused by conscious eyelid muscle contraction. These amplitude and temporal width disparities form the physiological basis for real-time command classification.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{eog_blink_thresholding.png}
+  \caption{Comparison of EOG signal waveforms: (A) Spontaneous involuntary blink displaying a narrow peak and short duration ($\approx 150\,\text{ms}$); (B) Intentional voluntary blink exhibiting a wider peak, higher voltage amplitude, and extended duration ($>400\,\text{ms}$).}
+  \label{fig:eog_blink_thresholding}
+\end{figure}
+
+\FloatBarrier
+\subsection{Characteristics of the Electrooculography (EOG) Signal}
+\label{subsec:eog_characteristics_detail}
+
+The electrooculography (EOG) signal possesses specific biophysical characteristics that dictate the design requirements of the signal conditioning hardware. The amplitude of raw surface-measured EOG signals typically ranges from $10\,\mu\text{V}$ to $5\,\text{mV}$, necessitating high-precision differential instrumentation amplifiers. In terms of frequency distribution, the fundamental power spectrum of interest for ocular movement spans from $0.1\,\text{Hz}$ to $30\,\text{Hz}$ \cite{webster2009medical}. Based on these biophysical properties, a hardware low-pass filter with a cut-off frequency of $30\,\text{Hz}$ was implemented to eliminate unwanted high-frequency noise. Furthermore, to isolate the DC offset component and shape the signal into sharp, well-defined pulses (spikes) corresponding to voluntary blinks, the cut-off frequency of the high-pass filter was set to $0.8\,\text{Hz}$.
+
+\FloatBarrier
+\subsection{Physiological Principles of Electrode Placement}
+\label{subsec:electrode_placement}
+
+Acquiring high-quality EOG signals requires proper anatomical positioning of surface electrodes. To capture the vertical channel (corresponding to vertical eye movements and eyelid blinks), electrodes are attached directly above and below one eye. For the horizontal channel, electrodes are placed at the lateral margins of both eyes, near the outer canthi. This configuration measures differential potential changes as the corneo-retinal dipole rotates toward or away from a given electrode, while a reference electrode positioned on the forehead provides a ground potential to cancel common-mode interference \cite{webster2009medical}. To illustrate the vertical channel electrode configuration described above, Figure \ref{fig:vertical_eog_placement} depicts the anatomical positioning of the supra-orbital and infra-orbital electrodes used in this project.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{vertical_eog_electrode_placement.jpeg}
+  \caption{Vertical EOG electrode placement \cite{li2021evaluation}.}
+  \label{fig:vertical_eog_placement}
+\end{figure}
+
+\FloatBarrier
+\subsection{Pathophysiology of Target Neuromuscular Disorders}
+\label{subsec:target_disorders}
+
+The developed assistive platform is designed for individuals suffering from severe neuromuscular impairment and loss of voluntary motor control. Key target pathologies include Amyotrophic Lateral Sclerosis (ALS), a progressive neurodegenerative disease; Quadriplegia, resulting in total limb paralysis; and Locked-in Syndrome (LIS), where cognitive awareness remains intact despite voluntary muscle loss. Furthermore, the system targets patients with Muscular Dystrophy (MD), a group of diseases causing progressive muscular weakness. In many stages of MD, the extraocular muscle control remains relatively preserved, making EOG an optimal, non-fatiguing physiological pathway for human-machine interaction \cite{hall2016guyton}.
+
+\FloatBarrier
+\subsection{Clinical Justification for EOG-Based Human-Machine Interfaces}
+\label{subsec:clinical_justification}
+
+The medical justification for selecting EOG signals as a control medium for these patient populations relies on an important anatomical and neurological principle: the cranial nerves responsible for extraocular muscle control—specifically the oculomotor nerve (CN III), trochlear nerve (CN IV), and abducens nerve (CN VI)—are typically spared during the progression of neurodegenerative conditions like ALS and severe paralysis \cite{hall2016guyton}. Because ocular motility remains functionally preserved, voluntary eye movements represent a reliable, non-fatiguing physiological pathway through which severely impaired patients can interact with human-machine interfaces (HMIs) to regain independence in mobility and communication.

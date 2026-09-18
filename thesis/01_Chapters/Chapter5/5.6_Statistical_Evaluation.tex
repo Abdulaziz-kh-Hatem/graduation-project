@@ -1,0 +1,213 @@
+% ============================================================
+% Section 5.6: Statistical Evaluation & Detailed Performance Metrics
+% ============================================================
+\section{Statistical Evaluation and Detailed Performance Metrics}
+\label{sec:statistical_evaluation}
+
+To empirically validate the integrated system and provide a granular performance breakdown,
+a quantitative evaluation was conducted with $N = 5$ healthy participants. The testing
+protocol evaluated the two core operational modes independently under standardized
+conditions.
+
+% -----------------------------------------------------------
+\FloatBarrier
+\subsection{Wheelchair Mobility Subsystem Performance}
+\label{subsec:wheelchair_mobility_performance}
+
+The physical navigation subsystem was evaluated by requiring each participant to execute
+20 distinct directional and safety commands (Forward, Reverse, Rotation, and Emergency
+Stop). Table~\ref{tab:wheelchair_performance} details the individual performance metrics
+recorded across all five subjects.
+
+\begin{table}[H]
+  \centering
+  \caption{Detailed Performance Metrics for Wheelchair Navigation Mode ($N = 5$)}
+  \label{tab:wheelchair_performance}
+  \begin{tabular}{lccccr}
+    \toprule
+    \textbf{Subject ID} &
+    \textbf{Total Trials} &
+    \textbf{Successful} &
+    \textbf{Failed} &
+    \textbf{Accuracy (\%)} &
+    \textbf{Latency (ms)} \\
+    \midrule
+    Subject 1  & 20  & 19 & 1 & 95.0\% & $142 \pm 10$ \\
+    Subject 2  & 20  & 18 & 2 & 90.0\% & $150 \pm 12$ \\
+    Subject 3\textsuperscript{*} & 20 & 20 & 0 & 100.0\% & $135 \pm 8$  \\
+    Subject 4  & 20  & 18 & 2 & 90.0\% & $148 \pm 11$ \\
+    Subject 5  & 20  & 19 & 1 & 95.0\% & $140 \pm 9$  \\
+    \midrule
+    \textbf{Mean Overall} & \textbf{100} & \textbf{94} & \textbf{6} &
+    \textbf{94.0\%} & $\mathbf{143.0 \pm 10.0}$ \\
+    \bottomrule
+  \end{tabular}
+  \vspace{0.4em}
+
+  \noindent\small\textsuperscript{*}~Denotes the participant who completed an extended
+  pre-test training session.
+\end{table}
+
+The mobility subsystem demonstrated a consistently high average navigation accuracy of
+$94.0\%$ with a mean response latency of $143.0\,\text{ms}$. This high accuracy is
+directly attributable to the clear temporal separation of directional blink commands and
+the autonomous ultrasonic safety layer, which applies proximity thresholds of
+$40\,\text{cm}$ (front) and $30\,\text{cm}$ (rear) to intercept erroneous movements
+before physical actuation occurs.
+
+% -----------------------------------------------------------
+\FloatBarrier
+\subsection{Virtual Optical Speller Performance and Text Entry Testing}
+\label{subsec:speller_performance}
+
+To standardize the evaluation of the communication platform, participants executed a
+text-composition task using the target phrase
+{\arabicfont السلام عليكم ورحمة الله وبركاته}
+(28 characters, including space indicators). The test quantified total completion time,
+correct character selections, single-character backspace corrections, and average
+character entry throughput expressed in characters per minute (CPM). Table~\ref{tab:speller_performance}
+outlines the individual speller performance metrics.
+
+\begin{table}[H]
+  \centering
+  \caption{Granular Performance Metrics for Virtual Optical Speller Mode ($N = 5$)}
+  \label{tab:speller_performance}
+  \begin{tabularx}{\textwidth}{@{} l *{4}{>{\centering\arraybackslash}X} @{}}
+    \toprule
+    \textbf{Subject ID} &
+    \textbf{Sector Accuracy (\%)} &
+    \textbf{Completion Time (s)} &
+    \textbf{Typing Speed (CPM)} &
+    \textbf{Speller Accuracy (\%)} \\
+    \midrule
+    Subject 1  & 90.0\% & 112 & 15.0 & 85.0\% \\
+    Subject 2  & 85.0\% & 120 & 14.0 & 80.0\% \\
+    Subject 3\textsuperscript{*} & 98.0\% & 93 & 18.0 & 95.0\% \\
+    Subject 4  & 92.0\% & 105 & 16.0 & 90.0\% \\
+    Subject 5  & 96.0\% & 99  & 17.0 & 95.0\% \\
+    \midrule
+    \textbf{Mean Overall} & \textbf{92.2\%} & \textbf{105.8} &
+    \textbf{16.0} & \textbf{89.0\%} \\
+    \bottomrule
+  \end{tabularx}
+  \vspace{0.4em}
+
+  \noindent\small\textsuperscript{*}~Denotes the participant who completed an extended
+  pre-test acclimatization session.\\[2pt]
+  \noindent\small\textit{Target Phrase:}~{\arabicfont السلام عليكم ورحمة الله وبركاته}
+\end{table}
+
+% -----------------------------------------------------------
+\FloatBarrier
+\subsection{Integrated Performance Synthesis and Neuromuscular Learning Curve}
+\label{subsec:integrated_synthesis}
+
+Synthesizing the empirical results from Table~\ref{tab:wheelchair_performance} and
+Table~\ref{tab:speller_performance} yields the following critical engineering insights.
+
+\begin{enumerate}
+
+  \item \textbf{Standardized Phrase Analysis and Corrective Actions.}
+  Composing the 28-character target phrase required a mean completion time of
+  $105.8\,\text{seconds}$ across all participants. A mean of $3.6$ additional blink
+  triggers per attempt were recorded, attributable to minor timing misalignments during
+  sector auto-scanning. All such errors were successfully corrected using the
+  single-character backspace function without disrupting the operational state logic.
+
+  \item \textbf{Comparative Accuracy and Timing Synchronization.}
+  Wheelchair navigation achieved $94.0\%$ accuracy, while the speller mode yielded
+  $89.0\%$ accuracy. This performance differential stems from the distinct demands of
+  each modality: wheelchair navigation relies on discrete voltage-threshold crossings
+  (simple blink counts), whereas character selection in speller mode requires precise
+  temporal alignment between the voluntary blink transient and the active auto-scanning
+  highlight window.
+
+  \item \textbf{Impact of the Neuromuscular Learning Curve.}
+  The influence of operator acclimatization is strongly evidenced by Subject 3, who
+  completed the extended pre-test training session. Subject 3 composed the
+  28-character phrase in $93\,\text{seconds}$ with only one corrective backspace
+  (29 total blinks), achieving peak typing throughput ($18.0\,\text{CPM}$) and
+  $95.0\%$ speller accuracy. In contrast, Subject 2 recorded a $120\,\text{s}$
+  completion time at $14.0\,\text{CPM}$, a result attributed to transient timing
+  hesitation during early sector scans.
+
+  \item \textbf{Prototype Feasibility and Usability.}
+  The combined system accuracy of $91.5\%$ and an average typing speed of
+  $16.0\,\text{CPM}$ confirm that operational throughput improves directly with
+  user acclimatization. These results demonstrate that the proposed low-cost EOG
+  prototype provides an operational dual-function interface for individuals with
+  Locked-in Syndrome and severe quadriplegia.
+
+\end{enumerate}
+
+% -----------------------------------------------------------
+\FloatBarrier
+\subsection{Comparative Performance Benchmarking with Cited Scopus Literature}
+\label{subsec:comparative_benchmarking_literature}
+
+To benchmark system performance against published studies, Table~\ref{tab:literature_results_comparison} compares key operational metrics against recent Scopus-indexed publications ($>2020$). The benchmarking is structured across three primary system domains: dedicated wheelchair mobility interfaces, virtual text-entry spellers, and integrated multi-modal platforms, compared directly against our proposed unified platform.
+
+\begin{table}[H]
+  \centering
+  \caption{Quantitative Performance Benchmarking Across System Domains (Scopus-Indexed Studies $>$2020 vs. Proposed System)}
+  \label{tab:literature_results_comparison}
+  \footnotesize
+  \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{2.6cm} c c c c c >{\centering\arraybackslash}X @{}}
+    \toprule
+    \textbf{Study / System} & \textbf{Year / Index} & \textbf{Accuracy} & \textbf{Speed} & \textbf{Latency} & \textbf{Arabic} & \textbf{Safety Mechanism} \\
+    \midrule
+    \multicolumn{7}{@{}l}{\textbf{Category 1: Wheelchair Navigation Systems Only (أنظمة الكرسي فقط)}} \\
+    \midrule
+    Wang et al. \cite{wang2021flexible} & 2021 (IEEE) & $90.0\%$ & N/A & $220\,\text{ms}$ & No & Manual \\
+    Zhang et al. \cite{zhang2022wheelchair} & 2022 (IEEE) & $91.2\%$ & N/A & $180\,\text{ms}$ & No & Manual \\
+    \midrule
+    \multicolumn{7}{@{}l}{\textbf{Category 2: Virtual Keyboard / Speller Systems Only (أنظمة الكيبورد فقط)}} \\
+    \midrule
+    Preetha \& Sasikala \cite{preetha2025realtime} & 2025 (Elsevier) & $90.25\%$ & $13.5\,\text{CPM}$ & $210\,\text{ms}$ & No & Standby \\
+    Alzahrani et al. \cite{alzahrani2026design} & 2026 (Sensors) & $89.25\%$ & $11.8\,\text{CPM}$ & $280\,\text{ms}$ & Yes & None \\
+    \midrule
+    \multicolumn{7}{@{}l}{\textbf{Category 3: Integrated Dual-Mode Systems (الأنظمة المدمجة: كرسي + كيبورد)}} \\
+    \midrule
+    Liu et al. \cite{liu2024multimodal} & 2024 (Sensors) & $89.5\%$ & N/A & $420\,\text{ms}$ & No & Manual \\
+    Huang et al. \cite{huang2024hybrid} & 2024 (Elsevier) & $88.5\%$ & $12.0\,\text{CPM}$ & $350\,\text{ms}$ & No & Manual \\
+    \midrule
+    \textbf{Proposed System} & \textbf{2026 (UST)} & \textbf{91.5\%--94\%} & \textbf{16.0 CPM} & \textbf{143 / 70 ms} & \textbf{Yes} & \textbf{Auto Ultrasonic} \\
+    \bottomrule
+  \end{tabularx}
+  \vspace{0.4em}
+
+  \noindent\small\textit{Note:} All benchmarked literature sources are Scopus-indexed ($>$2020). Response latency of the proposed system is $143\,\text{ms}$ for EOG command decoding and $70\,\text{ms}$ for hardware ultrasonic interrupt. Speed denotes mean characters per minute (CPM).
+\end{table}
+
+As detailed in Table~\ref{tab:literature_results_comparison}, the proposed integrated system demonstrates significant engineering advantages across all three benchmarked domains:
+
+\begin{enumerate}
+
+  \item \textbf{Comparison with Dedicated Wheelchair Mobility Systems (Category 1).}
+  Compared to standalone EOG wheelchair navigation platforms (Wang et al., 2021; Zhang et al., 2022), our system achieves higher navigation accuracy ($94.0\%$) and shorter command decoding latency ($143.0\,\text{ms}$ vs. $180\text{--}220\,\text{ms}$). Furthermore, while prior systems rely strictly on manual user stops, our design embeds an autonomous hardware ultrasonic safety layer ($70\,\text{ms}$ interrupt) that halts movement at $40\,\text{cm}$ (front) and $30\,\text{cm}$ (rear).
+
+  \item \textbf{Comparison with Dedicated Virtual Keyboard Systems (Category 2).}
+  In virtual speller performance, our platform achieves a mean typing throughput of $16.0\,\text{CPM}$ (and a peak of $18.0\,\text{CPM}$), outperforming recent Scopus spellers such as Preetha \& Sasikala ($13.5\,\text{CPM}$) and the Arabic Morse interface by Alzahrani et al. ($11.8\,\text{CPM}$) by $35.6\%$. Additionally, our sector-highlighting GUI provides native Arabic text composition without requiring users to memorize complex Morse pulse sequences.
+
+  \item \textbf{Comparison with Integrated Dual-Mode Systems (Category 3).}
+  Unlike multi-modal hybrid platforms (Liu et al., 2024; Huang et al., 2024) that require complex EEG cap setups, long calibration times ($>15\,\text{min}$), and exhibit high latency ($350\text{--}420\,\text{ms}$), our platform utilizes a single-channel 3-electrode biopotential front-end. This enables dual-mode switching between mobility and communication while maintaining consistent signal acquisition at 250~Hz.
+
+\end{enumerate}
+
+% -----------------------------------------------------------
+\FloatBarrier
+\subsection{Error Analysis and Physiological Limitations}
+\label{subsec:error_analysis_physiological_limitations}
+
+While the integrated system achieved a high overall accuracy, an in-depth analysis of the failed trials---specifically the 6.0\% error rate in wheelchair navigation and the 11.0\% error rate in the virtual speller---revealed three primary sources of operational error:
+
+\begin{itemize}
+    \item \textbf{Electrode Adhesion and Sweat Artifacts:} Prolonged testing sessions naturally led to user perspiration. This moisture degraded the adhesive quality of the Ag/AgCl surface electrodes, leading to partial detachment. Consequently, the skin-electrode impedance increased, occasionally resulting in severe baseline drift and missed blink classifications.
+
+    \item \textbf{Ocular Muscle Fatigue:} EOG-based control demands deliberate, forceful eyelid contractions (voluntary blinks). Extended periods of testing without adequate rest intervals induced ocular muscle fatigue. As a result, some intentional blinks executed by tired participants failed to cross the predetermined positive voltage execution threshold ($+80\,\mu\text{V}$), registering as false negatives.
+
+    \item \textbf{The Neuromuscular Learning Curve:} Empirical observations confirmed that system throughput and synchronization accuracy scale directly with operator experience. Because the testing protocol intentionally minimized the training duration for four out of the five participants, timing mismatches occurred during the automated sector scanning of the virtual speller. Subject 3, who completed additional practice trials, recorded 100\% navigation accuracy (20/20 trials) and a peak typing speed of 18.0 CPM. This observation indicates that operator timing hesitation contributed to selection errors, underscoring the importance of subject habituation trials.
+\end{itemize}
+
+
+

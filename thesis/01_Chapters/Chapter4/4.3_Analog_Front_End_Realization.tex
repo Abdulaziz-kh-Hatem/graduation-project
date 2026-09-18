@@ -1,0 +1,16 @@
+% ============================================================
+% Section 4.3: Analog Front-End Realization and Rapid Prototyping
+% ============================================================
+\section{Analog Front-End Realization and Rapid Prototyping}
+\label{sec:afe_rapid_prototyping}
+
+The physical implementation of the analog signal conditioning cascade was executed utilizing a modular rapid-prototyping approach on a breadboard, rather than a fixed Printed Circuit Board (PCB). This engineering decision was deliberate and necessary for clinical testing. EOG biopotentials and skin-electrode impedances vary significantly among different human subjects, requiring continuous dynamic calibration of the circuit.
+
+The breadboard architecture facilitated real-time tuning of the variable potentiometers to adjust the differential gain ($G_3$) and the DC offset levels, ensuring that the analog-to-digital converter (ADC) never saturated regardless of the specific patient's baseline resting potential. Furthermore, it allowed manual fine-tuning of the 50\,Hz active notch filter during live testing to maximize common-mode noise rejection.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{WhatsApp Image 2026-07-29 at 7.54.46 PM (1).jpeg}
+\caption{The physical realization of the EOG analog front-end on a breadboard. This modular rapid-prototyping setup was specifically adopted to allow real-time calibration of the potentiometers and dynamic adjustment of filter stages during clinical testing.}
+\label{fig:breadboard_afe_realization}
+\end{figure}

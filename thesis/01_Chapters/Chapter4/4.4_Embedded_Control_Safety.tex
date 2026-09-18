@@ -1,0 +1,18 @@
+% ============================================================
+% Section 4.4: Embedded Control and Autonomous Safety Hardware
+% ============================================================
+\section{Embedded Control and Autonomous Safety Hardware}
+\label{sec:embedded_control_safety_hardware}
+
+To isolate the high-current physical actuation from the sensitive biopotential acquisition circuit, an independent embedded control layer was established. The prototype wheelchair is governed by an Arduino microcontroller interfaced with an L298N dual H-bridge motor driver.
+
+A critical safety feature of this embedded layer is the autonomous collision avoidance system, achieved using front and rear HC-SR04 ultrasonic Time-of-Flight (ToF) sensors. The safety proximity thresholds were mathematically justified based on the system's total latency and physical inertia.
+
+The front threshold was strictly set to $40\,\text{cm}$. Given that the digital signal processing pipeline introduces a latency of approximately $143\,\text{ms}$, combined with the Arduino's hardware interrupt response time ($70\,\text{ms}$) and the forward mechanical inertia of the motors, $40\,\text{cm}$ ensures that the prototype comes to a complete halt before physical impact at maximum velocity. Conversely, the rear threshold was set to $30\,\text{cm}$ because the programmed reverse speed is significantly lower than the forward speed, thereby requiring a shorter braking distance.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{WhatsApp Image 2026-07-29 at 7.54.48 PM.jpeg}
+\caption{Rear view of the wheelchair prototype highlighting the rear HC-SR04 ultrasonic sensor responsible for the $30\,\text{cm}$ reverse safety braking threshold.}
+\label{fig:wheelchair_rear_ultrasonic_sensor}
+\end{figure}

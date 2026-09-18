@@ -1,0 +1,23 @@
+% ============================================================
+% Section 3.1: Overall System Block Diagram & Master Flowchart
+% ============================================================
+\section{Overall System Block Diagram \& Operation Flowchart}
+\label{sec:overall_system_block_diagram}
+
+The complete system architecture is conceptualized as a multi-stage signal processing pipeline. Figure~\ref{fig:overall_block_diagram} illustrates the high-level block diagram comprising four primary functional stages:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{system_block_diagram.jpeg}
+\caption{Overall System Block Diagram illustrating the Input Stage, Processing Unit, Output Stage, and Power Management Unit.}
+\label{fig:overall_block_diagram}
+\end{figure}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Input Stage:} Bio-potential skin electrodes, differential bio-amplifier, active analog filters, and DC level conditioning.
+    \item \textbf{Processing Unit:} Primary signal processing unit (MATLAB environment) for blink detection and feature extraction, interconnected with a real-time embedded microcontroller unit.
+    \item \textbf{Output Stage:} Dual output actuators consisting of the motorized 3D-printed prototype wheelchair drive mechanism and the Graphical User Interface (GUI) virtual speller.
+    \item \textbf{Power Management Unit:} Regulated power distribution network supplying dual symmetric voltage rails for analog signal conditioning and logic power for digital modules.
+\end{enumerate}
+
+

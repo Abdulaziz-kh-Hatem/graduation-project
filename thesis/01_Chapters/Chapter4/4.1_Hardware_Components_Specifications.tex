@@ -1,0 +1,124 @@
+% ============================================================
+% Section 4.1: Hardware Components Specifications
+% ============================================================
+\section{Hardware Components Specifications}
+\label{sec:hardware_components_specifications}
+
+To realize the integrated assistive platform, specific off-the-shelf electronic modules, power management systems, and integrated circuits were carefully selected based on their precision, power efficiency, and compatibility. Below is a technical breakdown of the primary hardware components utilized in both the analog front-end and the embedded control layers.
+
+\FloatBarrier
+\subsection{Instrumentation Amplifier (AD620)}
+\label{ad620_spec}
+
+\noindent\textbf{Technical Specs:} The AD620 is a high-accuracy instrumentation amplifier that requires only one external resistor to set gains from 1 to 10,000. It features a high Common-Mode Rejection Ratio ($\text{CMRR} > 100\,\text{dB}$), a low maximum offset voltage of $50\,\mu\text{V}$, and a low input bias current of $1.0\,\text{nA}$.
+
+\noindent\textbf{Design Justification:} This IC was chosen as the primary pre-amplifier (Stage 1) because its high input impedance ($10^{10}\,\Omega$) prevents loading the skin-electrode interface. Its high CMRR effectively rejects $50\,\text{Hz}$ power-line hum picked up by the human body during EOG acquisition.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{ad620_ic.png}
+\caption{AD620 Instrumentation Amplifier IC.}
+\label{fig:ad620_ic_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Dual Operational Amplifier (TL072)}
+\label{tl072_spec}
+
+\noindent\textbf{Technical Specs:} The TL072 is a high-speed JFET-input dual operational amplifier providing low noise ($18\,\text{nV}/\sqrt{\text{Hz}}$), minimal power consumption, and a high slew rate ($13\,\text{V}/\mu\text{s}$).
+
+\noindent\textbf{Design Justification:} Two TL072 ICs were utilized to construct the active Sallen-Key filters (High-pass and Low-pass), the $50\,\text{Hz}$ notch filter, and the DC level shifter. The JFET inputs ensure minimal signal distortion and preserve the integrity of the microvolt-level EOG transients.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{tl072_ic.png}
+\caption{TL072 JFET-Input Dual Operational Amplifier.}
+\label{fig:tl072_ic_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Bluetooth SPP Module (HC-05)}
+\label{hc05_spec}
+
+\noindent\textbf{Technical Specs:} The HC-05 operates on the $2.4\,\text{GHz}$ ISM band using Bluetooth V2.0+EDR and supports variable UART baud rates up to $115,200\,\text{bps}$.
+
+\noindent\textbf{Design Justification:} It was selected to establish a reliable, zero-latency wireless telemetry link between the MATLAB host environment and the wheelchair’s embedded microcontroller, ensuring complete physical isolation and independent mobility for the user.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{hc05_bluetooth.png}
+\caption{HC-05 Bluetooth Module for wireless telemetry.}
+\label{fig:hc05_bluetooth_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Dual H-Bridge Motor Driver (L298N)}
+\label{l298n_spec}
+
+\noindent\textbf{Technical Specs:} The L298N is a high-voltage, high-current dual full-bridge driver designed to accept standard TTL logic levels and drive inductive loads up to $2\,\text{A}$ per channel.
+
+\noindent\textbf{Design Justification:} This module efficiently translates the low-current Pulse-Width Modulation (PWM) signals from the Arduino into the high-current power required by the DC motors, enabling precise speed regulation and bidirectional rotation for the wheelchair chassis.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{l298n_driver.png}
+\caption{L298N Dual H-Bridge Motor Driver.}
+\label{fig:l298n_driver_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Geared DC Motors (TT Motors)}
+\label{tt_motor_spec}
+
+\noindent\textbf{Technical Specs:} The TT DC gear motors operate optimally between $3\,\text{V}$ and $6\,\text{V}$, featuring an internal gear reduction ratio of $1:48$ to maximize torque at lower rotational speeds.
+
+\noindent\textbf{Design Justification:} Four TT motors were selected for the 4-Wheel Drive (4WD) configuration. Their balanced torque-to-speed ratio enables the 3D-printed chassis to perform smooth acceleration, overcome floor friction, and execute full 360-degree zero-radius turns without drawing excessive current.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{tt_motor.png}
+\caption{TT Geared DC Motor ($1:48$ Ratio).}
+\label{fig:tt_motor_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Ultrasonic Time-of-Flight Sensor (HC-SR04)}
+\label{hcsr04_spec}
+
+\noindent\textbf{Technical Specs:} The HC-SR04 provides non-contact distance measurement from $2\,\text{cm}$ to $400\,\text{cm}$ with an acoustic ranging accuracy of up to $3\,\text{mm}$.
+
+\noindent\textbf{Design Justification:} Two sensors were integrated into the front and rear of the wheelchair. They continuously poll environmental proximity independently of the EOG inputs to trigger autonomous emergency stops, forming the core of the localized safety override layer.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{hcsr04_sensor.png}
+\caption{HC-SR04 Ultrasonic Distance Sensor.}
+\label{fig:hcsr04_sensor_photo}
+\end{figure}
+
+\FloatBarrier
+\subsection{Power Supply System: Lithium-Ion Cells and BMS}
+\label{power_system_spec}
+
+\noindent\textbf{Technical Specs:} The power bank utilizes high-capacity $3.7\,\text{V}$ Lithium-Ion cylindrical cells ($18650$ format, $1200\,\text{mAh}$) managed by a 3S $40\,\text{A}$ Battery Management System (BMS) protection board.
+
+\noindent\textbf{Design Justification:} To prevent electromagnetic interference from motor switching noise, the system employs isolated power distribution. The Li-ion cells provide high energy density for prolonged operation, while the 3S $40\,\text{A}$ BMS ensures cell balancing, overcharge protection, and safe current delivery during peak motor loads.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{liion_cell.png}
+    \caption{3.7V Lithium-Ion 18650 Cell.}
+    \label{fig:liion_cell_photo}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{bms_board.png}
+    \caption{3S 40A Battery Management System (BMS) Board.}
+    \label{fig:bms_board_photo}
+\end{subfigure}
+\caption{Power supply system components comprising 18650 Li-ion cells and 3S 40A BMS protection board.}
+\label{fig:power_supply_system_components}
+\end{figure}

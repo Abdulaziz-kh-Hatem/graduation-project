@@ -1,0 +1,218 @@
+% ============================================================
+% Section 4.2: Analog Circuit Simulation and Mathematical Derivations
+% ============================================================
+\section{Analog Circuit Simulation and Mathematical Derivations}
+\label{sec:circuit_simulation_math_derivations}
+
+Prior to physical prototype assembly, the complete multi-stage analog signal conditioning cascade was modeled and simulated using Proteus VSM and SPICE simulation tools to verify stability, gain linearity, active filter frequency response, and power line noise rejection characteristics. Figure \ref{fig:eog_circuit_schematic} illustrates the complete hardware schematic diagram of the EOG bio-potential conditioning circuit.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{eog_circuit.png}
+  \caption{Complete schematic diagram of the multi-stage EOG analog front-end circuit.}
+  \label{fig:eog_circuit_schematic}
+\end{figure}
+
+\FloatBarrier
+\subsection{Bipolar Power Supply Management}
+\label{subsec:bipolar_power_supply}
+
+Biopotential signals such as Electrooculography (EOG) exhibit alternating current (AC) characteristics around a zero-volt baseline with microvolt-level amplitudes. To process these signals without symmetrical waveform distortion, dynamic range degradation, or peak clipping, the analog signal conditioning subsystem requires a symmetric dual-polarity power supply configuration ($\pm 9\,\text{V}$).
+
+The system utilizes independent DC power sources to decouple power line noise from the sensitive analog front-end. The voltage rails are configured as follows:
+\begin{itemize}
+    \item \textbf{$V_{\text{CC}} = +9\,\text{V}$:} Connected to the positive supply pins of the instrumentation and operational amplifiers.
+    \item \textbf{$V_{\text{EE}} = -9\,\text{V}$:} Connected to the negative supply pins.
+    \item \textbf{$\text{GND} = 0\,\text{V}$:} Serves as the system analog reference ground point.
+\end{itemize}
+
+\FloatBarrier
+\subsection{Multi-Stage Hardware Topology}
+\label{subsec:multistage_hardware_topology}
+
+The physical signal conditioning circuit consists of four integrated circuits (ICs)---one AD620 Instrumentation Amplifier and three TL072 Low-Noise JFET-Input Dual Operational Amplifiers---divided into four sequential processing stages. Figure \ref{fig:afe_processing_cascade} illustrates the functional processing sequence from electrode acquisition to microcontroller ADC conversion.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+    node distance=0.8cm and 0.6cm,
+    block/.style={
+      rectangle,
+      draw=navyblue,
+      fill=blue!8!white,
+      thick,
+      rounded corners=4pt,
+      minimum height=1.3cm,
+      minimum width=2.8cm,
+      align=center,
+      font=\sffamily\small
+    },
+    sensor/.style={
+      rectangle,
+      draw=darkgreen,
+      fill=green!10!white,
+      thick,
+      rounded corners=4pt,
+      minimum height=1.3cm,
+      minimum width=2.5cm,
+      align=center,
+      font=\sffamily\small
+    },
+    mcu/.style={
+      rectangle,
+      draw=darkred,
+      fill=red!10!white,
+      thick,
+      rounded corners=4pt,
+      minimum height=1.3cm,
+      minimum width=2.5cm,
+      align=center,
+      font=\sffamily\small
+    },
+    arrow/.style={
+      ->,
+      >=Stealth,
+      thick,
+      line width=1.2pt,
+      draw=navyblue
+    }
+  ]
+
+    % Row 1 (Left to Right)
+    \node (electrodes) [sensor] {\textbf{Ag/AgCl Electrodes}\\[-2pt]\tiny (Periorbital Sensors)};
+    \node (stage1) [block, right=of electrodes] {\textbf{Stage 1: AD620}\\[-2pt]\tiny (Pre-Amp, $G_1 \approx 6\times$)};
+    \node (stage2) [block, right=of stage1] {\textbf{Stage 2: HPF \& LPF}\\[-2pt]\tiny (Active $0.8\text{ Hz} - 30\text{ Hz}$)};
+    \node (stage3) [block, right=of stage2] {\textbf{Stage 3: Notch \& $G_2$}\\[-2pt]\tiny ($50\text{ Hz}$ Notch, $G_2 = 10\times$)};
+
+    % Row 2 (Right to Left)
+    \node (stage4a) [block, below=1.2cm of stage3] {\textbf{Stage 4: Variable Gain}\\[-2pt]\tiny ($G_3 = 10\times - 100\times$)};
+    \node (stage4b) [block, left=of stage4a] {\textbf{Stage 4: Level Shifter}\\[-2pt]\tiny (DC Offset $+2.5\text{ V}$)};
+    \node (arduino) [mcu, left=of stage4b] {\textbf{Arduino Uno ADC}\\[-2pt]\tiny ($0\text{ V} - 5\text{ V}$ 10-bit Input)};
+
+    % Connections
+    \draw [arrow] (electrodes) -- (stage1);
+    \draw [arrow] (stage1) -- (stage2);
+    \draw [arrow] (stage2) -- (stage3);
+    \draw [arrow] (stage3.south) -- (stage4a.north);
+    \draw [arrow] (stage4a) -- (stage4b);
+    \draw [arrow] (stage4b) -- (arduino);
+
+  \end{tikzpicture}%
+  }
+  \caption{Sequential multi-stage processing cascade of the EOG analog front-end.}
+  \label{fig:afe_processing_cascade}
+\end{figure}
+
+\FloatBarrier
+\subsection{Mathematical Derivations \& Theoretical Circuit Calculations}
+\label{subsec:mathematical_derivations_calculations}
+
+Rigorous analytical design ensures that voltage gains, filter corner frequencies, and system dynamic ranges meet biomedical operational design specifications.
+
+\FloatBarrier
+\subsubsection{Stage 1 Gain Calculation (AD620)}
+\label{subsubsec:stage1_gain_calc}
+
+The differential voltage gain ($G_1$) of the AD620 instrumentation amplifier is defined by:
+\begin{equation}
+G_1 = 1 + \frac{49.4\,\text{k}\Omega}{R_G}
+\label{eq:ad620_gain_formula}
+\end{equation}
+
+Given a gain-setting resistor $R_G = 10\,\text{k}\Omega$:
+\begin{equation}
+G_1 = 1 + \frac{49.4\,\text{k}\Omega}{10\,\text{k}\Omega} = 1 + 4.94 = 5.94 \approx 6\times
+\label{eq:ad620_gain_result}
+\end{equation}
+
+\FloatBarrier
+\subsubsection{\texorpdfstring{High-Pass Filter Cutoff Frequency ($f_{c,\text{HPF}}$)}{High-Pass Filter Cutoff Frequency (fc,HPF)}}
+\label{subsubsec:hpf_cutoff_calc}
+
+The corner frequency ($f_{c,\text{HPF}}$) of the active Sallen-Key high-pass filter is determined by:
+\begin{equation}
+f_{c,\text{HPF}} = \frac{1}{2\pi \cdot R_{\text{HPF}} \cdot C_{\text{HPF}}}
+\label{eq:hpf_formula}
+\end{equation}
+
+Given $R_{\text{HPF}} = 200\,\text{k}\Omega = 200 \times 10^3\,\Omega$ and $C_{\text{HPF}} = 0.9\,\mu\text{F} = 0.9 \times 10^{-6}\,\text{F}$:
+\begin{equation}
+f_{c,\text{HPF}} = \frac{1}{2\pi \times (200 \times 10^3) \times (0.9 \times 10^{-6})} = \frac{1}{1.13097} \approx 0.884\,\text{Hz} \approx 0.8\,\text{Hz}
+\label{eq:hpf_result}
+\end{equation}
+
+\FloatBarrier
+\subsubsection{\texorpdfstring{Low-Pass Filter Cutoff Frequency ($f_{c,\text{LPF}}$)}{Low-Pass Filter Cutoff Frequency (fc,LPF)}}
+\label{subsubsec:lpf_cutoff_calc}
+
+The corner frequency ($f_{c,\text{LPF}}$) of the active Sallen-Key low-pass filter is given by:
+\begin{equation}
+f_{c,\text{LPF}} = \frac{1}{2\pi \cdot R_{\text{LPF}} \cdot C_{\text{LPF}}}
+\label{eq:lpf_formula}
+\end{equation}
+
+Given $R_{\text{LPF}} = 27\,\text{k}\Omega = 27 \times 10^3\,\Omega$ and $C_{\text{LPF}} = 0.2\,\mu\text{F} = 0.2 \times 10^{-6}\,\text{F}$:
+\begin{equation}
+f_{c,\text{LPF}} = \frac{1}{2\pi \times (27 \times 10^3) \times (0.2 \times 10^{-6})} = \frac{1}{0.033929} \approx 29.47\,\text{Hz} \approx 30\,\text{Hz}
+\label{eq:lpf_result}
+\end{equation}
+
+\FloatBarrier
+\subsubsection{\texorpdfstring{Notch Filter Rejection Frequency ($f_{\text{notch}}$)}{Notch Filter Rejection Frequency (fnotch)}}
+\label{subsubsec:notch_cutoff_calc}
+
+The notch rejection frequency ($f_{\text{notch}}$) for power-line noise reduction is given by:
+\begin{equation}
+f_{\text{notch}} = \frac{1}{2\pi \cdot R_{\text{notch}} \cdot C_{\text{notch}}}
+\label{eq:notch_formula}
+\end{equation}
+
+With $C_{\text{notch}} = 0.2\,\mu\text{F}$ and the variable potentiometer calibrated to $R_{\text{notch}} \approx 15.915\,\text{k}\Omega$:
+\begin{equation}
+f_{\text{notch}} = \frac{1}{2\pi \times (15.915 \times 10^3) \times (0.2 \times 10^{-6})} \approx 50.0\,\text{Hz}
+\label{eq:notch_result}
+\end{equation}
+
+\FloatBarrier
+\subsubsection{\texorpdfstring{Secondary Stage Voltage Gain ($G_2$)}{Secondary Stage Voltage Gain (G2)}}
+\label{subsubsec:secondary_gain_calc}
+
+The non-inverting operational amplifier gain ($G_2$) is expressed as:
+\begin{equation}
+G_2 = 1 + \frac{R_f}{R_{\text{in}}}
+\label{eq:g2_formula}
+\end{equation}
+
+Given $R_f = 1\,\text{M}\Omega = 1000\,\text{k}\Omega$ and $R_{\text{in}} = 100\,\text{k}\Omega$ (scaled to yield an exact factor of $10\times$):
+\begin{equation}
+G_2 = 1 + \frac{1000\,\text{k}\Omega}{100\,\text{k}\Omega} = 1 + 9 = 10\times
+\label{eq:g2_result}
+\end{equation}
+
+\FloatBarrier
+\subsubsection{\texorpdfstring{Total System Gain Range ($A_{\text{total}}$)}{Total System Gain Range (Atotal)}}
+\label{subsubsec:total_gain_calc}
+
+The overall analog amplification factor ($A_{\text{total}}$) is the product of the cascaded individual stage gains:
+\begin{equation}
+A_{\text{total}} = G_1 \cdot G_2 \cdot G_3
+\label{eq:atotal_formula}
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{Minimum Gain Bound ($G_{3,\text{min}} = 10\times$):}
+    \begin{equation}
+    A_{\text{total,min}} = 6 \times 10 \times 10 = 600\times
+    \label{eq:atotal_min}
+    \end{equation}
+    \item \textbf{Maximum Gain Bound ($G_{3,\text{max}} = 100\times$):}
+    \begin{equation}
+    A_{\text{total,max}} = 6 \times 10 \times 100 = 6000\times
+    \label{eq:atotal_max}
+    \end{equation}
+\end{itemize}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Biomedical Signal Conditioning Summary}]
+This total dynamic system gain ($600\times - 6000\times$) reliably elevates raw microvolt EOG biopotentials ($\approx 100\,\mu\text{V} - 600\,\mu\text{V}$) into measurable voltage levels ($0.6\,\text{V} - 3.6\,\text{V}$ centered around a $+2.5\,\text{V}$ DC baseline), perfectly aligning with the dynamic input span of the Arduino 10-bit ADC ($0\,\text{V} - 5\,\text{V}$).
+\end{tcolorbox}

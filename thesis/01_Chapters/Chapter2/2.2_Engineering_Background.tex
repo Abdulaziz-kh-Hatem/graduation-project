@@ -1,0 +1,130 @@
+% ============================================================
+% Section 2.2: Engineering Background
+% ============================================================
+\section{Engineering Background}
+\label{sec:engineering_background}
+
+Designing an EOG-guided 3D-printed prototype wheelchair and virtual speller system requires integrating bio-instrumentation, analog electronics, digital signal processing, embedded control, and distance sensing.
+
+\FloatBarrier
+\subsection{Principles of Bio-Signal Acquisition and Ambient Noise}
+\label{subsec:biopotential_acquisition}
+
+Acquiring electrooculography (EOG) signals from the skin surface requires overcoming several physical and electrical challenges. First, high skin-electrode interface impedance significantly attenuates the microvolt-level biological signal. Second, the bio-potential is highly susceptible to ambient electromagnetic interference, primarily $50\,\text{Hz}$ power line noise, which the human body picks up like an antenna and presents as a common-mode voltage across the measurement electrodes. Additionally, motion artifacts resulting from lead wire movement or adjacent electromyographic (EMG) muscle contractions contaminate the raw signal \cite{webster2009medical}. Overcoming these acquisition challenges requires designing a front-end amplifier with high input impedance ($>10^9\,\Omega$) and high common-mode rejection ratio ($\text{CMRR} > 100\,\text{dB}$) prior to any digital processing stage. To visualize the severity of these noise contamination sources, Figure \ref{fig:eog_noise_comparison} presents a conceptual comparison between a raw EOG signal corrupted by 50 Hz interference and baseline drift versus the ideal clean blink waveform that the signal conditioning chain aims to recover.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{eog_noise_comparison.png}
+  \caption{Conceptual comparison between an ideal clean EOG blink transient and a raw bio-signal contaminated with 50 Hz power-line interference and baseline drift.}
+  \label{fig:eog_noise_comparison}
+\end{figure}
+
+\FloatBarrier
+\subsection{Instrumentation Amplifiers and the Significance of CMRR}
+\label{subsec:instrumentation_amp_cmrr}
+
+To isolate weak bio-potentials from severe ambient interference, an instrumentation amplifier (InAmp) is utilized in the primary acquisition stage rather than standard operational amplifiers (Op-Amps). An instrumentation amplifier operates on differential amplification principles; it amplifies the minute differential voltage existing between two measurement electrodes (representing ocular displacement) while virtually rejecting the common-mode potential present identically at both electrodes (such as $50\,\text{Hz}$ power line noise) \cite{webster2009medical}.
+
+The efficiency of an amplifier in suppressing common-mode noise is mathematically defined by the Common-Mode Rejection Ratio ($\text{CMRR}$), expressed in decibels ($\text{dB}$) as:
+\begin{equation}
+\text{CMRR (dB)} = 20 \log_{10} \left( \frac{A_d}{A_{cm}} \right)
+\label{eq:cmrr_formula}
+\end{equation}
+where $A_d$ represents the differential voltage gain and $A_{cm}$ represents the common-mode voltage gain.
+
+In precision biomedical applications such as EOG acquisition, maintaining a high $\text{CMRR}$ is essential to ensure signal integrity. This engineering requirement justifies selecting the AD620 integrated circuit (IC) for the primary pre-amplification stage in this project's hardware design. The AD620 provides an exceptionally high input impedance and a minimum $\text{CMRR}$ of $100\,\text{dB}$ \cite{ad620datasheet}.
+
+In addition to noise rejection capabilities, the AD620 instrumentation amplifier allows precise control over the differential voltage gain ($G$) using a single external resistor ($R_G$), governed by the manufacturer's characteristic transfer equation \cite{ad620datasheet}:
+\begin{equation}
+G = 1 + \frac{49.4\,\text{k}\Omega}{R_G}
+\label{eq:ad620_transfer}
+\end{equation}
+This adjustable feature offers necessary engineering flexibility to achieve the target preliminary amplification for weak blink transients prior to passing the signal through subsequent active filtering stages. To illustrate this integrated architecture, Figure \ref{fig:ad620_functional_schematic} depicts the internal functional schematic of the AD620 instrumentation amplifier and the external connection of the gain-setting resistor ($R_G$) across Pins 1 and 8 \cite{ad620datasheet}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{ad620.jpeg}
+  \caption{Functional architecture and $R_G$ gain-setting connection of the AD620 InAmp \cite{ad620datasheet}.}
+  \label{fig:ad620_functional_schematic}
+\end{figure}
+
+\FloatBarrier
+\subsection{Active Analog Filters (Active Sallen-Key and Notch Filters)}
+\label{subsec:active_analog_filters}
+
+Active analog filters are critical for conditioning acquired bio-potentials prior to analog-to-digital conversion. Active topologies incorporating operational amplifiers are preferred in low-frequency biomedical applications because they eliminate the need for bulky inductors and offer low output impedance, which prevents inter-stage loading effects \cite{webster2009medical}.
+
+The Sallen-Key architecture is one of the most widely implemented topologies for designing second-order low-pass and high-pass filters. Assuming equal component values ($R_1 = R_2 = R$ and $C_1 = C_2 = C$), the cut-off frequency ($f_c$) is governed by:
+\begin{equation}
+f_c = \frac{1}{2 \pi R C}
+\label{eq:sallen_key_fc_bg}
+\end{equation}
+
+In biomedical signal processing, a high-pass filter (HPF) removes the DC offset caused by half-cell potentials at the skin-electrode interface, whereas a low-pass filter (LPF) restricts the signal bandwidth to satisfy sampling requirements and prevent aliasing. Furthermore, to eliminate $50\,\text{Hz}$ or $60\,\text{Hz}$ power-line interference, a notch filter (band-stop filter) is incorporated to sharply attenuate the specific power line frequency without distorting the primary biophysical spectrum. To visualize the spectral selectivity of these conditioning stages, Figure \ref{fig:active_filters_bode} illustrates the frequency response characteristics (Bode plots) of the high-pass ($f_c = 0.8\,\text{Hz}$), low-pass ($f_c = 30\,\text{Hz}$), and 50 Hz notch filters \cite{webster2009medical}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{Active_Filters_EOG_30Hz.png}
+    \caption{Ideal frequency response curves (Bode plots) for High-Pass ($f_c = 0.8\,\text{Hz}$), Low-Pass ($f_c = 30\,\text{Hz}$), and 50 Hz Notch active filters in EOG signal conditioning \cite{webster2009medical}.}
+    \label{fig:active_filters_bode}
+\end{figure}
+
+\FloatBarrier
+\subsection{Digital Signal Processing and Pattern Extraction}
+\label{subsec:dsp_moving_average}
+
+Once digitized by an Analog-to-Digital Converter (ADC) at a sampling rate adhering to the Nyquist-Shannon sampling theorem, raw bio-signals undergo digital processing to enhance signal quality and extract feature metrics. Processing typically begins with digital smoothing techniques, such as moving average filtering, to suppress high-frequency ripple components and highlight primary signal morphology.
+
+Pattern extraction primarily relies on threshold detection algorithms. Mathematically, the instantaneous discrete signal sample $x(n)$ is compared against a predefined threshold value $Th$. When $x(n) > Th$, the event onset is logged. To differentiate between distinct physiological patterns (such as involuntary vs. intentional blinks), the algorithm measures the elapsed pulse width ($T_{\text{width}}$) during which the signal remains above the threshold. Based on this temporal width and event frequency, the signal is classified to generate real-time control commands for external hardware. To demonstrate this temporal feature extraction logic, Figure \ref{fig:eog_threshold_twidth} depicts the threshold crossing criterion $x(n) > Th$ and the measurement of pulse width ($T_{\text{width}}$) used for pattern classification.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{EOG_Threshold_Twidth.png}
+    \caption{Conceptual digital thresholding scheme and temporal pulse width ($T_{\text{width}}$) feature extraction for EOG event classification.}
+    \label{fig:eog_threshold_twidth}
+\end{figure}
+
+\FloatBarrier
+\subsection{Motor Control and Pulse-Width Modulation (PWM)}
+\label{subsec:dc_motor_pwm}
+
+Guiding robotic and mobility systems requires precise control over both the rotational speed and direction of direct current (DC) motors. Because microcontrollers cannot directly deliver the high currents required by DC motors, motor driver circuits act as high-current electronic switches interfacing the controller to the motor power supply.
+
+To regulate motor speed efficiently, Pulse-Width Modulation (PWM) is employed. PWM rapidly switches the applied voltage between ON and OFF states at a fixed switching frequency. The ratio of the ON duration to the total period, known as the duty cycle ($D$), determines the effective average output voltage ($V_{\text{out}}$) applied to the motor:
+\begin{equation}
+V_{\text{out}} = D \times V_{\text{in}}
+\label{eq:pwm_vout}
+\end{equation}
+where $V_{\text{in}}$ represents the supply voltage. The duty cycle $D$ is calculated as a percentage:
+\begin{equation}
+D = \frac{T_{\text{on}}}{T_{\text{total}}} \times 100\%
+\label{eq:pwm_duty_cycle}
+\end{equation}
+where $T_{\text{on}}$ is the active pulse duration and $T_{\text{total}}$ is the total period ($T_{\text{on}} + T_{\text{off}}$). This technique delivers linear speed control while minimizing thermal power dissipation. To illustrate the relationship between pulse active time and effective voltage, Figure \ref{fig:pwm_duty_cycles} compares PWM pulse trains at different duty cycles and their resulting average output voltages.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{PWM_Duty_Cycles_Comparison.png}
+    \caption{Pulse-Width Modulation (PWM) pulse trains at various duty cycles ($25\%$, $50\%$, and $75\%$) and their corresponding average output voltages.}
+    \label{fig:pwm_duty_cycles}
+\end{figure}
+
+\FloatBarrier
+\subsection{Principle of Ultrasonic Distance Measurement}
+\label{subsec:ultrasonic_tof}
+
+To maintain navigation safety and prevent collisions in mobile platforms, ultrasonic sensors are implemented based on the Time-of-Flight (ToF) principle. The transmitter transducer emits ultrasonic acoustic pulses beyond human audible range, while the receiver transducer detects the echo reflected back from an obstacle.
+
+The physical distance ($d$) between the sensor and the detected obstacle is calculated from the elapsed round-trip time ($t$) and the speed of sound in air ($v \approx 343\,\text{m/s}$) using:
+\begin{equation}
+d = \frac{v \times t}{2}
+\label{eq:tof_distance}
+\end{equation}
+The factor of 2 accounts for the two-way acoustic path (propagation to the obstacle and back). The computed distance feeds directly into safety control logic, executing immediate automated intervention such as emergency stopping to prevent physical collision. To visualize this two-way acoustic path, Figure \ref{fig:ultrasonic_tof_principle} illustrates the Time-of-Flight (ToF) measurement principle between the ultrasonic transducer and an obstacle.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{Ultrasonic_ToF_Principle.png}
+    \caption{Operating principle of ultrasonic Time-of-Flight (ToF) distance measurement showing acoustic pulse emission, obstacle reflection, and two-way travel path ($2d$).}
+    \label{fig:ultrasonic_tof_principle}
+\end{figure}

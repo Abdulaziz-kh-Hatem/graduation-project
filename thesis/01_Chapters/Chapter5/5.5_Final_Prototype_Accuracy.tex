@@ -1,0 +1,54 @@
+% ============================================================
+% Section 5.5: General Discussion and Interpretation of Results
+% ============================================================
+\section{General Discussion and Interpretation of Results}
+\label{sec:general_discussion}
+
+Based on the experimental results, the integrated system demonstrated high efficiency
+in achieving its primary objectives: providing independent navigation and effective
+virtual communication using electrooculography (EOG) signals. This performance stems
+from key engineering and design choices, discussed and interpreted below.
+
+% -----------------------------------------------------------
+\subsection{Impact of Hybrid Signal Processing}
+\label{subsec:impact_hybrid_signal_processing}
+
+The results indicate that relying solely on digital filtering is insufficient for
+processing microvolt-level EOG signals. Combining the AD620 instrumentation amplifier
+with hardware analog filters was crucial for eliminating initial motion artifacts and
+baseline instability. Subsequently, MATLAB digital filters (a $50\,\text{Hz}$ notch
+filter and a moving average filter) suppressed power-line interference and smoothed
+the waveform spikes. Distributing the processing workload between hardware and software
+yielded a clean, stable signal while reducing the computational burden on the
+microcontroller, enabling real-time command processing with minimal latency.
+
+% -----------------------------------------------------------
+\subsection{Overcoming Physiological Challenges}
+\label{subsec:overcoming_physiological_challenges}
+
+During initial testing, variations in skin impedance caused by perspiration, along with
+involuntary facial muscle contractions (EMG artifacts), presented primary technical
+challenges. These interferences manifested as baseline drift and biopotential waveform
+distortions. To address these issues, a thresholding algorithm proved effective by
+detecting voltage threshold crossings rather than relying on exact waveform matching.
+This approach prevented false activations from rapid involuntary blinks, ensuring the
+system responded exclusively to intentional, voluntary blinks and significantly reducing
+false trigger rates.
+
+% -----------------------------------------------------------
+\subsection{Clinical Value of the Integrated Design}
+\label{subsec:clinical_value_integrated_design}
+
+Compared to existing assistive solutions for Locked-in Syndrome (LIS) and quadriplegic
+patients, the proposed system offers improved user comfort and lower cognitive strain.
+Unlike camera-based eye-tracking systems that require continuous visual focus---causing
+severe eye fatigue and susceptibility to the ``Midas Touch'' problem---this design
+provides asynchronous control. The user is not required to stare constantly at the
+screen; instead, interaction occurs only through voluntary blinks when desired.
+Furthermore, integrating the wheelchair and virtual keyboard into a unified software
+platform reduces cognitive load by maintaining a consistent control modality across
+both subsystems, with built-in standby states preventing unintended operational commands.
+
+Overall, these findings demonstrate the clinical feasibility of the system as a
+low-cost, effective assistive solution that provides functional autonomy while
+maintaining user safety and operational reliability.
